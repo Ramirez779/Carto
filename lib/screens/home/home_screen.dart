@@ -13,34 +13,42 @@ class HomeScreen extends StatelessWidget {
           const Text(
             'Explorar productos',
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           Expanded(
             child: GridView.builder(
               itemCount: 6,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
                 childAspectRatio: 0.75,
               ),
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.shopping_bag_outlined, size: 40),
-                      const SizedBox(height: 8),
-                      Text('Producto ${index + 1}'),
+                      const Icon(
+                        Icons.shopping_bag_outlined,
+                        size: 36,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Producto ${index + 1}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
                 );
