@@ -12,7 +12,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> routes = {
     splash: (_) => const SplashScreen(),
-    home: (_) => const HomeScreen(),
+    home: (_) =>  HomeScreen(),
     cart: (_) => const CartScreen(),
     profile: (_) => const ProfileScreen(),
   };
