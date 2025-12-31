@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:carto/providers/cart_provider.dart';
+import 'package:carto/screens/checkout/checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -15,14 +16,13 @@ class CartScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // 🔽 CONTENIDO SCROLLABLE
+            // 🔽 CONTENIDO
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 🛒 TÍTULO
                     const Text(
                       'Carrito',
                       style: TextStyle(
@@ -30,10 +30,8 @@ class CartScreen extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     const SizedBox(height: 16),
 
-                    // 📦 LISTA
                     Expanded(
                       child: cart.items.isEmpty
                           ? const Center(
@@ -66,7 +64,6 @@ class CartScreen extends StatelessWidget {
                                   ),
                                   child: Row(
                                     children: [
-                                      // ICONO
                                       Container(
                                         height: 48,
                                         width: 48,
@@ -80,10 +77,7 @@ class CartScreen extends StatelessWidget {
                                           Icons.shopping_bag_outlined,
                                         ),
                                       ),
-
                                       const SizedBox(width: 12),
-
-                                      // INFO
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -105,7 +99,6 @@ class CartScreen extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-
                                       IconButton(
                                         icon: const Icon(
                                           Icons.delete_outline,
@@ -126,7 +119,7 @@ class CartScreen extends StatelessWidget {
               ),
             ),
 
-            // 🔒 RESUMEN + BOTÓN PROTEGIDOS
+            // 🔒 RESUMEN + BOTÓN
             Padding(
               padding: EdgeInsets.fromLTRB(
                 16,
@@ -169,7 +162,6 @@ class CartScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 12),
 
                     SizedBox(
@@ -185,8 +177,17 @@ class CartScreen extends StatelessWidget {
                           ),
                           elevation: 0,
                         ),
-                        onPressed:
-                            cart.items.isEmpty ? null : () {},
+                        onPressed: cart.items.isEmpty
+                            ? null
+                            : () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const CheckoutScreen(),
+                                  ),
+                                );
+                              },
                         child: const Text(
                           'Proceder al pago',
                           style: TextStyle(
