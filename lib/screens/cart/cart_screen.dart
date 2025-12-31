@@ -8,85 +8,200 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = context.watch<CartProvider>();
+    final bottomInset = MediaQuery.of(context).padding.bottom;
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Carrito',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-            ),
-          ),
+    return Scaffold(
+      backgroundColor: const Color(0xffF5F6FA),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 🔽 CONTENIDO SCROLLABLE
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 🛒 TÍTULO
+                    const Text(
+                      'Carrito',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
 
-          const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-          Expanded(
-            child: cart.items.isEmpty
-                ? const Center(child: Text('Tu carrito está vacío'))
-                : ListView.separated(
-                    itemCount: cart.items.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final item = cart.items[index];
-
-                      return Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.shopping_bag_outlined),
-                            const SizedBox(width: 12),
-
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Text('\$${item.price}'),
-                                ],
+                    // 📦 LISTA
+                    Expanded(
+                      child: cart.items.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'Tu carrito está vacío',
+                                style: TextStyle(color: Colors.black54),
                               ),
-                            ),
+                            )
+                          : ListView.separated(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: cart.items.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 12),
+                              itemBuilder: (context, index) {
+                                final item = cart.items[index];
 
-                            IconButton(
-                              icon: const Icon(Icons.delete_outline),
-                              onPressed: () {
-                                cart.removeProduct(item);
+                                return Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            Colors.black.withOpacity(0.05),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // ICONO
+                                      Container(
+                                        height: 48,
+                                        width: 48,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              const Color(0xffF5F6FA),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: const Icon(
+                                          Icons.shopping_bag_outlined,
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 12),
+
+                                      // INFO
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.title,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              '\$${item.price}',
+                                              style: const TextStyle(
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.black54,
+                                        ),
+                                        onPressed: () {
+                                          cart.removeProduct(item);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
                               },
                             ),
-                          ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // 🔒 RESUMEN + BOTÓN PROTEGIDOS
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                12,
+                16,
+                12 + bottomInset,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Total',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-          ),
+                        Text(
+                          '\$${cart.totalPrice.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
 
-          const SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Total',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color(0xff4F6EF7),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(14),
+                          ),
+                          elevation: 0,
+                        ),
+                        onPressed:
+                            cart.items.isEmpty ? null : () {},
+                        child: const Text(
+                          'Proceder al pago',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                '\$${cart.totalPrice.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
