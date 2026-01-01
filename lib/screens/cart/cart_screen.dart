@@ -16,7 +16,7 @@ class CartScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // 🔽 CONTENIDO
+            //Contenido 
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -34,12 +34,7 @@ class CartScreen extends StatelessWidget {
 
                     Expanded(
                       child: cart.items.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'Tu carrito está vacío',
-                                style: TextStyle(color: Colors.black54),
-                              ),
-                            )
+                          ? const _EmptyCartView()
                           : ListView.separated(
                               physics: const BouncingScrollPhysics(),
                               itemCount: cart.items.length,
@@ -119,7 +114,7 @@ class CartScreen extends StatelessWidget {
               ),
             ),
 
-            // 🔒 RESUMEN + BOTÓN
+            //Resumen + Botón
             Padding(
               padding: EdgeInsets.fromLTRB(
                 16,
@@ -200,6 +195,62 @@ class CartScreen extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//Estado vacio
+class _EmptyCartView extends StatelessWidget {
+  const _EmptyCartView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 96,
+              width: 96,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.shopping_cart_outlined,
+                size: 40,
+                color: Colors.black38,
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Tu carrito está vacío',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Explora productos y agrégalos aquí',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black54,
+              ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

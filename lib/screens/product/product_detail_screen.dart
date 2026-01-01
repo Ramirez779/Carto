@@ -20,34 +20,45 @@ class ProductDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(product.title),
         centerTitle: true,
+        elevation: 0,
+        backgroundColor: const Color(0xffF5F6FA),
+        foregroundColor: Colors.black,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            // 🔽 CONTENIDO SCROLLABLE
+            //Contenido
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Imagen
+                    //Imagen de producto
                     Container(
-                      height: 240,
+                      height: 260,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 16,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
                       ),
                       child: const Icon(
                         Icons.shopping_bag_outlined,
-                        size: 80,
+                        size: 96,
+                        color: Colors.black54,
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
-                    // Título
+                    //Titulo
                     Text(
                       product.title,
                       style: const TextStyle(
@@ -58,49 +69,71 @@ class ProductDetailScreen extends StatelessWidget {
 
                     const SizedBox(height: 8),
 
-                    // Precio
+                    //Precio
                     Text(
-                      '\$${product.price}',
+                      '\$${product.price.toStringAsFixed(2)}',
                       style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff4F6EF7),
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
 
-                    // Descripción
+                    //Descripción
                     const Text(
-                      'Este producto es una muestra del catálogo. '
-                      'Aquí puedes mostrar una descripción más detallada.',
+                      'Este producto forma parte del catálogo de la tienda. '
+                      'Aquí puedes mostrar una descripción más detallada, '
+                      'beneficios, características o cualquier información relevante.',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black87,
+                        height: 1.4,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
 
-            // 🔘 BOTÓN PROTEGIDO (NO LO TAPA EL SISTEMA)
+            //Botón fijo abajo
             Padding(
               padding: EdgeInsets.fromLTRB(
                 16,
                 12,
                 16,
-                12 + bottomInset, // 🔥 CLAVE
+                12 + bottomInset,
               ),
               child: SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff4F6EF7),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
                   onPressed: () {
                     context.read<CartProvider>().addProduct(product);
 
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Producto agregado al carrito'),
+                        behavior: SnackBarBehavior.floating,
                       ),
                     );
                   },
-                  child: const Text('Agregar al carrito'),
+                  child: const Text(
+                    'Agregar al carrito',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ),

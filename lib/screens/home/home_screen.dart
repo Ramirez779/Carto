@@ -22,12 +22,12 @@ class HomeScreen extends StatelessWidget {
         slivers: [
           const HomeSliverAppBar(),
 
-          // 🔽 SEPARACIÓN REAL ENTRE APPBAR Y BANNER
+          //Separación real entre Appbar y Baner
           const SliverToBoxAdapter(
             child: SizedBox(height: 20),
           ),
 
-          // 🔥 BANNER DESCUENTO
+          //Banner descuento
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -81,7 +81,7 @@ class HomeScreen extends StatelessWidget {
             child: SizedBox(height: 28),
           ),
 
-          // 🛍 TÍTULO
+          //Título
           const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -99,7 +99,7 @@ class HomeScreen extends StatelessWidget {
             child: SizedBox(height: 16),
           ),
 
-          // 🧱 GRID
+          //Grid
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(

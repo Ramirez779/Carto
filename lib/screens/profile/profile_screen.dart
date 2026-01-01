@@ -14,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 👤 HEADER
+              //Header
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -59,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              // 📋 SECCIÓN
+              //Seccion
               const Text(
                 'Cuenta',
                 style: TextStyle(
@@ -86,7 +86,7 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // 🚪 LOGOUT
+              //Logout
               const Text(
                 'Sesión',
                 style: TextStyle(
@@ -111,7 +111,7 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-// 🔹 TILE REUTILIZABLE
+//Titulo reutilizable
 class _ProfileTile extends StatelessWidget {
   final IconData icon;
   final String title;

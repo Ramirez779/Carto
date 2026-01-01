@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'screens/splash_screen.dart';
 import 'screens/main_shell.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
@@ -17,7 +17,7 @@ class CartoApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const MainShell(),
+        home: const SplashScreen(),
       ),
     );
   }
