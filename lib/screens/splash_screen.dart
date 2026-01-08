@@ -52,8 +52,9 @@ class _SplashScreenState extends State<SplashScreen>
           opacity: _fadeAnimation,
           child: Image.asset(
             'assets/Logo_carto.png',
-            width: size.width * 0.3,  // proporcional al ancho de pantalla
-            height: size.width * 0.3, // mantiene proporción cuadrada
+            width: size.width * 0.55,  // proporcional al ancho de pantalla
+            height: size.width * 0.55,
+            fit: BoxFit.contain,  // mantiene proporción cuadrada
           ),
         ),
       ),

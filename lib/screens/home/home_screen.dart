@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carto/models/product.dart';
 import 'package:carto/screens/product/product_detail_screen.dart';
 import 'package:carto/widgets/home_sliver_app.dart';
+import 'package:carto/widgets/product_card.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -22,12 +23,9 @@ class HomeScreen extends StatelessWidget {
         slivers: [
           const HomeSliverAppBar(),
 
-          //Separación real entre Appbar y Baner
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-          //Banner descuento
+          // Banner
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -36,16 +34,14 @@ class HomeScreen extends StatelessWidget {
                 child: Container(
                   height: 140,
                   padding: const EdgeInsets.all(18),
-                  decoration: const BoxDecoration(
-                    color: Color(0xff4F6EF7),
-                  ),
+                  color: const Color(0xff4F6EF7),
                   child: Row(
-                    children: [
+                    children: const [
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               '30% OFF',
                               style: TextStyle(
@@ -65,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.local_offer_outlined,
                         color: Colors.white,
                         size: 46,
@@ -77,29 +73,21 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 28)),
 
-          //Título
           const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Productos',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
             ),
           ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-          //Grid
+          // GRID CON ProductCard
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(
@@ -107,7 +95,8 @@ class HomeScreen extends StatelessWidget {
                 (context, index) {
                   final product = products[index];
 
-                  return GestureDetector(
+                  return ProductCard(
+                    product: product,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -117,48 +106,6 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Container(
-                      clipBehavior: Clip.antiAlias,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Expanded(
-                            child: Center(
-                              child: Icon(
-                                Icons.shopping_bag_outlined,
-                                size: 42,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            product.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '\$${product.price}',
-                            style: const TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   );
                 },
                 childCount: products.length,
@@ -172,9 +119,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 28)),
         ],
       ),
     );
