@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// Screens
 import 'screens/splash_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/register_screen.dart';
 import 'screens/main_shell.dart';
+
+// Providers
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
 
@@ -17,7 +23,16 @@ class CartoApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const SplashScreen(),
+
+        // Pantalla inicial
+        initialRoute: '/splash',
+
+        routes: {
+          '/splash': (context) => const SplashScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/register': (context) => const RegisterScreen(),
+          '/home': (context) => const MainShell(),
+        },
       ),
     );
   }

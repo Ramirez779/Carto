@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'main_shell.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -28,10 +27,9 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Después de 2.5 segundos, ir a MainShell
+    // 👉 Splash → Login
     Future.delayed(const Duration(milliseconds: 2500), () {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainShell()));
+      Navigator.pushReplacementNamed(context, '/login');
     });
   }
 
@@ -52,9 +50,9 @@ class _SplashScreenState extends State<SplashScreen>
           opacity: _fadeAnimation,
           child: Image.asset(
             'assets/Logo_carto.png',
-            width: size.width * 0.55,  // proporcional al ancho de pantalla
+            width: size.width * 0.55,
             height: size.width * 0.55,
-            fit: BoxFit.contain,  // mantiene proporción cuadrada
+            fit: BoxFit.contain,
           ),
         ),
       ),

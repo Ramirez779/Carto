@@ -1,11 +1,19 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:carto/models/product.dart';
 import 'package:carto/screens/product/product_detail_screen.dart';
 import 'package:carto/widgets/home_sliver_app.dart';
 import 'package:carto/widgets/product_card.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoading = true;
 
   final List<Product> products = [
     Product(id: 'p1', title: 'Camisa', price: 25.99, image: ''),
@@ -15,100 +23,84 @@ class HomeScreen extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(milliseconds: 900), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xffF5F6FA),
+      backgroundColor:
+          isDark ? const Color(0xff0F1115) : const Color(0xffF5F6FA),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           const HomeSliverAppBar(),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-          // Banner
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  height: 140,
-                  padding: const EdgeInsets.all(18),
-                  color: const Color(0xff4F6EF7),
-                  child: Row(
-                    children: const [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '30% OFF',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'En productos seleccionados',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.local_offer_outlined,
-                        color: Colors.white,
-                        size: 46,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          // Banner con la corrección aplicada
+          SliverPersistentHeader(
+            pinned: false,
+            delegate: _PromoBannerDelegate(isDark: isDark),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 28)),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 24),
+          ),
 
+          // Título
           const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Productos',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16),
+          ),
 
-          // GRID CON ProductCard
+          // Grid de Productos
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final product = products[index];
+                  if (_isLoading) {
+                    return const _SkeletonCard();
+                  }
 
-                  return ProductCard(
-                    product: product,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              ProductDetailScreen(product: product),
-                        ),
-                      );
-                    },
+                  final product = products[index];
+                  return AnimatedOpacity(
+                    opacity: 1,
+                    duration: const Duration(milliseconds: 400),
+                    child: ProductCard(
+                      product: product,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ProductDetailScreen(product: product),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
-                childCount: products.length,
+                childCount: _isLoading ? 4 : products.length,
               ),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -119,7 +111,134 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 28)),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 28),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
+  final bool isDark;
+
+  _PromoBannerDelegate({required this.isDark});
+
+  @override
+  double get minExtent => 0;
+
+  @override
+  double get maxExtent => 140;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final opacity = 1 - (shrinkOffset / maxExtent);
+
+    return Opacity(
+      opacity: opacity.clamp(0, 1),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xff1C1F26) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // ARREGLO APLICADO AQUÍ
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    '30% de descuento',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'En productos seleccionados',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.local_offer_outlined,
+              size: 40,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
+}
+
+class _SkeletonCard extends StatelessWidget {
+  const _SkeletonCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xff1C1F26) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.2),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                Container(
+                  height: 12,
+                  width: double.infinity,
+                  color: Colors.grey.withOpacity(0.3),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 12,
+                  width: 60,
+                  color: Colors.grey.withOpacity(0.3),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
