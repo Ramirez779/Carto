@@ -1,73 +1,89 @@
 # Carto – Flutter Shopping App UI
 
-Carto es un prototipo de aplicación de compras desarrollado con Flutter.
-El proyecto está enfocado en la creación de una interfaz moderna, limpia
-y bien estructurada para una app de e-commerce, sin integración de backend
-ni servicios externos.
+## Descripción
+
+Carto es un prototipo de aplicación de compras desarrollado con Flutter. El proyecto está enfocado en la creación de una interfaz moderna, limpia y bien estructurada para una aplicación de e-commerce. No incluye backend ni servicios externos. Todo el contenido es simulado con fines educativos.
+
+El proyecto sirve como práctica visual y como base escalable para futuras implementaciones.
+
+---
 
 ## Objetivo del proyecto
 
-El objetivo principal de Carto es servir como práctica y base visual para
-una aplicación de compras en línea, enfocándose en:
+El objetivo principal de Carto es:
 
-- Diseño de interfaces modernas con Flutter
-- Organización correcta del proyecto
-- Manejo de estado simple
-- Experiencia de usuario clara y limpia
-- Base escalable para futuras mejoras
+- Practicar el diseño de interfaces modernas con Flutter
+- Aplicar una estructura clara de proyecto
+- Utilizar un manejo de estado simple
+- Mejorar la experiencia de usuario
+- Crear una base visual para una futura aplicación de compras real
+
+---
 
 ## Tecnologías utilizadas
 
-- Flutter (SDK 3.x)
-- Dart
-- Provider para manejo de estado
-- Material Design
-- Google Fonts
+- **Flutter** (SDK 3.x)
+- **Dart**
+- **Provider** para manejo de estado
+- **Material Design**
+- **Google Fonts**
+
+---
 
 ## Estructura del proyecto
 
+```
 lib/
 ├── main.dart
 ├── providers/
-│   └── cart_provider.dart
 ├── screens/
-│   ├── splash/
-│   │   └── splash_screen.dart
-│   ├── cart/
-│   │   └── cart_screen.dart
-│   ├── checkout/
-│   │   └── checkout_screen.dart
-│   └── main_shell.dart
 ├── models/
-│   └── product.dart
 └── widgets/
-    └── componentes reutilizables
 
 assets/
-└── Logo_carto.png
+└── images/
+    └── logo.png
+```
+
+La carpeta `lib` contiene el archivo principal `main.dart`, los providers para manejo de estado, las pantallas principales de la aplicación, los modelos de datos y los widgets reutilizables. La carpeta `assets` contiene los recursos gráficos como el logo de la aplicación.
+
+---
 
 ## Funcionalidades actuales
 
-- Pantalla splash con animación simple
-- Navegación principal de la aplicación
-- Listado de productos simulado
-- Carrito de compras
-- Eliminación de productos del carrito
-- Cálculo automático del total
-- Pantalla de resumen previa al pago
+La aplicación cuenta con las siguientes características:
+
+- **Pantalla splash** con animación simple
+- **Navegación principal** entre pantallas
+- **Listado de productos** con datos simulados
+- **Carrito de compras** con funcionalidad para agregar y eliminar productos
+- **Cálculo automático** del total del carrito
+- **Pantalla de resumen** previa al pago (checkout)
+
+---
 
 ## Alcance del proyecto
 
-Este proyecto es únicamente una demostración de interfaz y estructura.
-No incluye:
+Este proyecto es únicamente una demostración de interfaz y arquitectura. 
+
+**No incluye:**
 
 - Backend
 - Autenticación
 - Pagos reales
 - Base de datos
+- Servicios externos
 
-Todo el contenido es simulado con fines educativos.
+Todos los datos y flujos están simulados con fines educativos.
+
+---
 
 ## Autor
 
-Proyecto desarrollado como práctica personal en Flutter.
+Proyecto desarrollado como práctica personal en Flutter, enfocado en diseño de interfaces, estructura del proyecto y manejo de estado.
+
+---
+
+## Licencia
+
+Este proyecto es de código abierto y está disponible para fines educativos.
