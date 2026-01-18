@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: Image.asset(
-            'assets/Logo_carto.png',
+            'assets/logo_carto.jpg',
             width: size.width * 0.55,
             height: size.width * 0.55,
             fit: BoxFit.contain,
