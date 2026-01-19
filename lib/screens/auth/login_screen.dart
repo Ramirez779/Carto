@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../main_shell.dart';
 import 'register_screen.dart';
+import '/widgets/auth_card.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,48 +10,64 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  String? _emailError;
-  String? _passwordError;
   bool _obscure = true;
   bool _loading = false;
 
-  void _login() async {
-    setState(() {
-      _emailError = null;
-      _passwordError = null;
-    });
+  late AnimationController _controller;
+  late Animation<double> _fade;
+  late Animation<Offset> _slide;
 
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
+  @override
+  void initState() {
+    super.initState();
 
-    bool hasError = false;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
 
-    if (email.isEmpty || !email.contains('@')) {
-      _emailError = 'Correo inválido';
-      hasError = true;
-    }
+    _fade = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
 
-    if (password.length < 6) {
-      _passwordError = 'Mínimo 6 caracteres';
-      hasError = true;
-    }
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.04),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
 
-    if (hasError) {
-      setState(() {});
-      return;
-    }
+    _controller.forward();
+  }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _loginFake() async {
     setState(() => _loading = true);
 
-    // Simulación login
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 700));
 
     if (!mounted) return;
 
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const MainShell()),
+    );
+  }
+
+  void _loginGoogleFake() {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const MainShell()),
@@ -65,116 +82,30 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 420),
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(.08),
-                    blurRadius: 24,
-                    offset: const Offset(0, 12),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff4F6EF7).withOpacity(.15),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const Icon(
-                          Icons.lock_outline,
-                          color: Color(0xff4F6EF7),
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      const Text(
-                        'Iniciar sesión',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // Email
-                  _input(
-                    controller: _emailController,
-                    hint: 'Correo electrónico',
-                    icon: Icons.email_outlined,
-                    error: _emailError,
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  // Password
-                  _passwordInput(),
-
-                  const SizedBox(height: 22),
-
-                  // Botón login
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff4F6EF7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      onPressed: _loading ? null : _login,
-                      child: _loading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text(
-                              'Entrar',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+            child: FadeTransition(
+              opacity: _fade,
+              child: SlideTransition(
+                position: _slide,
+                child: AuthCard(
+                  title: 'Iniciar sesión',
+                  children: [
+                    _input(
+                      controller: _emailController,
+                      hint: 'Correo electrónico',
+                      icon: Icons.email_outlined,
                     ),
-                  ),
-
-                  const SizedBox(height: 22),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('¿No tienes cuenta?'),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            _animatedRoute(const RegisterScreen()),
-                          );
-                        },
-                        child: const Text('Regístrate'),
-                      ),
-                    ],
-                  ),
-                ],
+                    const SizedBox(height: 14),
+                    _passwordInput(),
+                    const SizedBox(height: 22),
+                    _loginButton(),
+                    const SizedBox(height: 18),
+                    _divider(),
+                    const SizedBox(height: 18),
+                    _googleButton(),
+                    const SizedBox(height: 20),
+                    _footerRegister(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -183,112 +114,148 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  //input normal
   Widget _input({
     required TextEditingController controller,
     required String hint,
     required IconData icon,
-    String? error,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: Icon(icon, size: 20),
-            filled: true,
-            fillColor: const Color(0xffF6F7FB),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 16,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide.none,
-            ),
-          ),
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hint,
+        prefixIcon: Icon(icon, size: 20),
+        filled: true,
+        fillColor: const Color(0xffF6F7FB),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 16,
         ),
-        if (error != null) ...[
-          const SizedBox(height: 6),
-          Text(
-            error,
-            style: const TextStyle(
-              color: Colors.redAccent,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+      ),
     );
   }
 
-  //password
   Widget _passwordInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: _passwordController,
-          obscureText: _obscure,
-          decoration: InputDecoration(
-            hintText: 'Contraseña',
-            prefixIcon: const Icon(Icons.lock_outline, size: 20),
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscure ? Icons.visibility_off : Icons.visibility,
-                size: 20,
+    return TextField(
+      controller: _passwordController,
+      obscureText: _obscure,
+      decoration: InputDecoration(
+        hintText: 'Contraseña',
+        prefixIcon: const Icon(Icons.lock_outline, size: 20),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscure ? Icons.visibility_off : Icons.visibility,
+            size: 20,
+          ),
+          onPressed: () {
+            setState(() => _obscure = !_obscure);
+          },
+        ),
+        filled: true,
+        fillColor: const Color(0xffF6F7FB),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 16,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _loginButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton(
+        onPressed: _loading ? null : _loginFake,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xff4F6EF7),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 0,
+        ),
+        child: _loading
+            ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Text(
+                'Iniciar sesión',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              onPressed: () {
-                setState(() => _obscure = !_obscure);
-              },
-            ),
-            filled: true,
-            fillColor: const Color(0xffF6F7FB),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 16,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide.none,
-            ),
+      ),
+    );
+  }
+
+  Widget _divider() {
+    return Row(
+      children: const [
+        Expanded(child: Divider()),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            'o continúa con',
+            style: TextStyle(fontSize: 12),
           ),
         ),
-        if (_passwordError != null) ...[
-          const SizedBox(height: 6),
-          Text(
-            _passwordError!,
-            style: const TextStyle(
-              color: Colors.redAccent,
-              fontSize: 12,
-            ),
-          ),
-        ],
+        Expanded(child: Divider()),
       ],
     );
   }
 
-  //Animación
-  Route _animatedRoute(Widget page) {
-    return PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (_, animation, __, child) {
-        final slide = Tween<Offset>(
-          begin: const Offset(0.08, 0),
-          end: Offset.zero,
-        ).animate(animation);
-
-        return FadeTransition(
-          opacity: animation,
-          child: SlideTransition(
-            position: slide,
-            child: child,
+  Widget _googleButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: OutlinedButton(
+        onPressed: _loginGoogleFake,
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-        );
-      },
+        ),
+        child: const Text(
+          'Continuar con Google',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _footerRegister() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text('¿No tienes cuenta?'),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const RegisterScreen(),
+              ),
+            );
+          },
+          child: const Text('Regístrate'),
+        ),
+      ],
     );
   }
 }
