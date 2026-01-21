@@ -6,6 +6,8 @@ import 'screens/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/main_shell.dart';
+import 'screens/checkout/order_success_screen.dart';
+
 
 // Providers
 import 'providers/cart_provider.dart';
@@ -32,6 +34,9 @@ class CartoApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
           '/home': (context) => const MainShell(),
+
+          '/order-success': (context) => const OrderSuccessScreen(),
+
         },
       ),
     );

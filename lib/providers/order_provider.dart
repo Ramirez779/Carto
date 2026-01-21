@@ -1,22 +1,23 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import '../models/order_model.dart';
+import '../models/order.dart';
+import '../models/cart_item.dart';
 
-class OrderProvider with ChangeNotifier {
-  final List<OrderModel> _orders = [];
+class OrderProvider extends ChangeNotifier {
+  final List<Order> _orders = [];
 
-  List<OrderModel> get orders => [..._orders];
+  List<Order> get orders => List.unmodifiable(_orders);
 
-  void addOrder(List items, double total) {
+  void addOrder(List<CartItem> items, double total) {
     _orders.insert(
       0,
-      OrderModel(
-        id: Random().nextDouble().toString(),
-        items: items,
+      Order(
+        id: DateTime.now().toString(),
+        items: List.from(items),
         total: total,
         date: DateTime.now(),
       ),
     );
+
     notifyListeners();
   }
 }

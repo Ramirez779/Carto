@@ -59,8 +59,8 @@ class CheckoutScreen extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(item.title),
-                                  Text('\$${item.price}'),
+                                  Text(item.product.title),
+                                  Text('\$${item.product.price} x${item.quantity}'),
                                 ],
                               ),
                             ),
@@ -74,7 +74,7 @@ class CheckoutScreen extends StatelessWidget {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '\$${cart.totalPrice.toStringAsFixed(2)}',
+                                '\$${cart.total.toStringAsFixed(2)}',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -111,20 +111,16 @@ class CheckoutScreen extends StatelessWidget {
                   onPressed: cart.items.isEmpty
                       ? null
                       : () {
+                          final cart = context.read<CartProvider>();
+
                           context.read<OrderProvider>().addOrder(
-                                cart.items,
-                                cart.totalPrice,
-                              );
+                            cart.items,
+                            cart.total,
+                          );
 
                           cart.clear();
 
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  const OrderSuccessScreen(),
-                            ),
-                          );
+                          Navigator.pushReplacementNamed(context, '/order-success');
                         },
                   child: const Text(
                     'Confirmar pedido',

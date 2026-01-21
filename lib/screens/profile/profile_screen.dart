@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'order_screens.dart'; // Asegúrate de que este import es correcto
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -63,16 +64,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
-                  const [
+                  [
                     _ProfileTile(
                       icon: Icons.receipt_long,
                       title: 'Mis pedidos',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const OrdersScreen(),
+                          ),
+                        );
+                      },
                     ),
-                    _ProfileTile(
+                    const _ProfileTile(
                       icon: Icons.favorite_border,
                       title: 'Favoritos',
                     ),
-                    _ProfileTile(
+                    const _ProfileTile(
                       icon: Icons.settings,
                       title: 'Configuración',
                     ),
@@ -196,11 +205,13 @@ class _ProfileTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final bool isLogout;
+  final VoidCallback? onTap;
 
   const _ProfileTile({
     required this.icon,
     required this.title,
     this.isLogout = false,
+    this.onTap,
   });
 
   @override
@@ -219,37 +230,41 @@ class _ProfileTile extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          Container(
-            height: 36,
-            width: 36,
-            decoration: BoxDecoration(
-              color: const Color(0xffF5F6FA),
-              borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Row(
+          children: [
+            Container(
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xffF5F6FA),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                icon,
+                size: 20,
+                color: isLogout ? Colors.red : Colors.black,
+              ),
             ),
-            child: Icon(
-              icon,
-              size: 20,
-              color: isLogout ? Colors.red : Colors.black,
+            const SizedBox(width: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: isLogout ? Colors.red : Colors.black,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: isLogout ? Colors.red : Colors.black,
+            const Spacer(),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.black38,
             ),
-          ),
-          const Spacer(),
-          const Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: Colors.black38,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -81,7 +81,7 @@ class CartScreen extends StatelessWidget {
                                       CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      item.title,
+                                      item.product.title,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -90,7 +90,7 @@ class CartScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '\$${item.price}',
+                                      '\$${item.product.price} x${item.quantity}',
                                       style: const TextStyle(
                                         color: Colors.black54,
                                       ),
@@ -104,7 +104,7 @@ class CartScreen extends StatelessWidget {
                                   color: Colors.black54,
                                 ),
                                 onPressed: () {
-                                  cart.removeProduct(item);
+                                  cart.removeProduct(item.product);
                                 },
                               ),
                             ],
@@ -155,7 +155,7 @@ class CartScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '\$${cart.totalPrice.toStringAsFixed(2)}',
+                            '\$${cart.total.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
