@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+
 import 'package:carto/models/product.dart';
 import 'package:carto/screens/product/product_detail_screen.dart';
 import 'package:carto/widgets/home_sliver_app.dart';
@@ -16,10 +17,34 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
 
   final List<Product> products = [
-    Product(id: 'p1', title: 'Camisa', price: 25.99, image: ''),
-    Product(id: 'p2', title: 'Zapatos', price: 59.99, image: ''),
-    Product(id: 'p3', title: 'Mochila', price: 39.99, image: ''),
-    Product(id: 'p4', title: 'Gorra', price: 15.99, image: ''),
+    Product(
+      id: 'p1',
+      title: 'Auriculares',
+      price: 29.99,
+      image:
+          'https://images.unsplash.com/photo-1518441988790-2dc4e8a8d9a3',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Smart Watch',
+      price: 59.99,
+      image:
+          'https://images.unsplash.com/photo-1523275335684-37898b6baf30',
+    ),
+    Product(
+      id: 'p3',
+      title: 'Teclado',
+      price: 89.99,
+      image:
+          'https://images.unsplash.com/photo-1517336714731-489689fd1ca8',
+    ),
+    Product(
+      id: 'p4',
+      title: 'Mouse Gamer',
+      price: 19.99,
+      image:
+          'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04',
+    ),
   ];
 
   @override
@@ -44,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
         slivers: [
           const HomeSliverAppBar(),
 
-          // Banner con la corrección aplicada
           SliverPersistentHeader(
             pinned: false,
             delegate: _PromoBannerDelegate(isDark: isDark),
@@ -54,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SizedBox(height: 24),
           ),
 
-          // Título
           const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -72,7 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SizedBox(height: 16),
           ),
 
-          // Grid de Productos
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(
@@ -83,21 +105,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   final product = products[index];
-                  return AnimatedOpacity(
-                    opacity: 1,
-                    duration: const Duration(milliseconds: 400),
-                    child: ProductCard(
-                      product: product,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ProductDetailScreen(product: product),
-                          ),
-                        );
-                      },
-                    ),
+
+                  return ProductCard(
+                    product: product,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              ProductDetailScreen(product: product),
+                        ),
+                      );
+                    },
                   );
                 },
                 childCount: _isLoading ? 4 : products.length,
@@ -154,10 +173,8 @@ class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
         ),
         child: Row(
           children: [
-            // ARREGLO APLICADO AQUÍ
             Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
