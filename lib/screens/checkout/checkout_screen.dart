@@ -4,8 +4,68 @@ import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
 import 'order_success_screen.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
+
+  @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  bool _isLoading = false;
+
+  void _confirmOrder(BuildContext context) async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final cart = context.read<CartProvider>();
+      final orderProvider = context.read<OrderProvider>();
+
+      // 🔹 SIN await - porque addOrder no retorna Future
+      orderProvider.addOrder(
+        cart.items,
+        cart.total,
+      );
+
+      cart.clear();
+
+      // 🔹 Pequeña pausa para que se vea el loading
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // 🔹 PASO 3 - ANIMACIÓN SUAVE
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 300),
+            pageBuilder: (_, __, ___) => const OrderSuccessScreen(),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+      }
+    } catch (e) {
+      // Manejo de error (opcional)
+      debugPrint('Error al confirmar pedido: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error al procesar el pedido'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +93,11 @@ class CheckoutScreen extends StatelessWidget {
                       title: 'Dirección de entrega',
                       child: Text(
                         'Calle Principal #123\nCiudad, País',
-                        style: TextStyle(color: Colors.black54),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black54,
+                          height: 1.4,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -41,9 +105,12 @@ class CheckoutScreen extends StatelessWidget {
                       title: 'Método de pago',
                       child: Row(
                         children: [
-                          Icon(Icons.credit_card),
-                          SizedBox(width: 8),
-                          Text('Tarjeta de crédito'),
+                          Icon(Icons.credit_card, size: 20),
+                          SizedBox(width: 10),
+                          Text(
+                            'Tarjeta de crédito',
+                            style: TextStyle(fontSize: 15),
+                          ),
                         ],
                       ),
                     ),
@@ -54,30 +121,49 @@ class CheckoutScreen extends StatelessWidget {
                         children: [
                           ...cart.items.map(
                             (item) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.only(bottom: 12),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(item.product.title),
-                                  Text('\$${item.product.price} x${item.quantity}'),
+                                  Expanded(
+                                    child: Text(
+                                      item.product.title,
+                                      style: const TextStyle(fontSize: 15),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(
+                                    '\$${item.product.price} x${item.quantity}',
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
-                          const Divider(),
+                          const SizedBox(height: 12),
+                          const Divider(height: 1),
+                          const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
                                 'Total',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               Text(
                                 '\$${cart.total.toStringAsFixed(2)}',
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
+                                  color: Color(0xff4F6EF7),
                                 ),
                               ),
                             ],
@@ -89,7 +175,6 @@ class CheckoutScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             Padding(
               padding: EdgeInsets.fromLTRB(
                 16,
@@ -108,27 +193,25 @@ class CheckoutScreen extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  onPressed: cart.items.isEmpty
+                  onPressed: _isLoading || cart.items.isEmpty
                       ? null
-                      : () {
-                          final cart = context.read<CartProvider>();
-
-                          context.read<OrderProvider>().addOrder(
-                            cart.items,
-                            cart.total,
-                          );
-
-                          cart.clear();
-
-                          Navigator.pushReplacementNamed(context, '/order-success');
-                        },
-                  child: const Text(
-                    'Confirmar pedido',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                      : () => _confirmOrder(context),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Confirmar pedido',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -151,7 +234,7 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
@@ -168,10 +251,13 @@ class _SectionCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style:
-                const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           child,
         ],
       ),
