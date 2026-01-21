@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:carto/providers/cart_provider.dart';
-import 'package:carto/screens/checkout/checkout_screen.dart';
+import '../../providers/cart_provider.dart';
+import '../checkout/checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -12,28 +13,24 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xffF5F6FA),
-
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
               sliver: SliverToBoxAdapter(
-                child: const Text(
+                child: Text(
                   'Carrito',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
+                  style: GoogleFonts.inter(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
                   ),
                 ),
               ),
             ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
-
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
             cart.items.isEmpty
                 ? const SliverFillRemaining(
                     hasScrollBody: false,
@@ -43,11 +40,9 @@ class CartScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverList.separated(
                       itemCount: cart.items.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: 12),
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final item = cart.items[index];
-
                         return Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
@@ -72,27 +67,29 @@ class CartScreen extends StatelessWidget {
                                 ),
                                 child: const Icon(
                                   Icons.shopping_bag_outlined,
+                                  color: Colors.black54,
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       item.product.title,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: GoogleFonts.inter(
                                         fontWeight: FontWeight.w600,
+                                        fontSize: 15,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       '\$${item.product.price} x${item.quantity}',
-                                      style: const TextStyle(
+                                      style: GoogleFonts.inter(
                                         color: Colors.black54,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   ],
@@ -113,14 +110,10 @@ class CartScreen extends StatelessWidget {
                       },
                     ),
                   ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 120),
-            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 120)),
           ],
         ),
       ),
-
       bottomNavigationBar: cart.items.isEmpty
           ? null
           : SafeArea(
@@ -144,19 +137,18 @@ class CartScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             'Total',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
                             '\$${cart.total.toStringAsFixed(2)}',
-                            style: const TextStyle(
+                            style: GoogleFonts.inter(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -169,11 +161,9 @@ class CartScreen extends StatelessWidget {
                         height: 48,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xff4F6EF7),
+                            backgroundColor: const Color(0xff4F6EF7),
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(14),
                             ),
                             elevation: 0,
                           ),
@@ -181,16 +171,16 @@ class CartScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    const CheckoutScreen(),
+                                builder: (_) => const CheckoutScreen(),
                               ),
                             );
                           },
-                          child: const Text(
+                          child: Text(
                             'Proceder al pago',
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -212,16 +202,16 @@ class _EmptyCartView extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(
             Icons.shopping_cart_outlined,
             size: 64,
-            color: Colors.black38,
+            color: Colors.black.withOpacity(0.3),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'Tu carrito está vacío',
-            style: TextStyle(
+            style: GoogleFonts.inter(
               fontSize: 16,
               color: Colors.black54,
               fontWeight: FontWeight.w500,

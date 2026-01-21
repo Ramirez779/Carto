@@ -1,3 +1,4 @@
+// lib/routes/app_routes.dart
 import 'package:flutter/material.dart';
 import '../screens/splash/splash_screen.dart';
 import '../screens/home/home_screen.dart';
@@ -12,8 +13,8 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> routes = {
     splash: (_) => const SplashScreen(),
-    home: (_) =>  HomeScreen(),
-    cart: (_) => const CartScreen(),
-    profile: (_) => const ProfileScreen(),
+    home: (_) => const HomeScreen(),   // ← const agregado
+    cart: (_) => const CartScreen(),   // ← const agregado
+    profile: (_) => const ProfileScreen(), // ← const agregado
   };
 }

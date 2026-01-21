@@ -12,6 +12,9 @@ import 'screens/checkout/order_success_screen.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
 
+//fonts
+import 'package:google_fonts/google_fonts.dart';
+
 class CartoApp extends StatelessWidget {
   const CartoApp({super.key});
 
@@ -26,6 +29,16 @@ class CartoApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+
+        theme: ThemeData(
+          textTheme: GoogleFonts.interTextTheme(), // Tipografía Inter
+          scaffoldBackgroundColor: const Color(0xffF5F6FA),
+          useMaterial3: true, // Material Design 3
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xff4F6EF7), // Color principal
+            brightness: Brightness.light,
+          ),
+        ),
 
         //pantalla inicial
         initialRoute: '/splash',
