@@ -8,7 +8,6 @@ import 'screens/auth/register_screen.dart';
 import 'screens/main_shell.dart';
 import 'screens/checkout/order_success_screen.dart';
 
-
 // Providers
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
@@ -20,13 +19,15 @@ class CartoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(
+          create: (_) => CartProvider()..loadCart(),
+        ),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
 
-        // Pantalla inicial
+        //pantalla inicial
         initialRoute: '/splash',
 
         routes: {
@@ -34,9 +35,7 @@ class CartoApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
           '/home': (context) => const MainShell(),
-
           '/order-success': (context) => const OrderSuccessScreen(),
-
         },
       ),
     );
