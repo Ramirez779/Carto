@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../checkout/checkout_screen.dart';
+import '../../ui/design_tokens.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -12,20 +13,21 @@ class CartScreen extends StatelessWidget {
     final cart = context.watch<CartProvider>();
 
     return Scaffold(
-      backgroundColor: const Color(0xffF5F6FA),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+              padding: EdgeInsets.fromLTRB(
+                  AppSpacing.l, AppSpacing.xl, AppSpacing.l, 0),
               sliver: SliverToBoxAdapter(
                 child: Text(
                   'Carrito',
                   style: GoogleFonts.inter(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black87,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
@@ -37,17 +39,18 @@ class CartScreen extends StatelessWidget {
                     child: _EmptyCartView(),
                   )
                 : SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.l),
                     sliver: SliverList.separated(
                       itemCount: cart.items.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: AppSpacing.m),
                       itemBuilder: (context, index) {
                         final item = cart.items[index];
                         return Container(
-                          padding: const EdgeInsets.all(14),
+                          padding: EdgeInsets.all(AppSpacing.m),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(AppRadius.l),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.05),
@@ -62,15 +65,16 @@ class CartScreen extends StatelessWidget {
                                 height: 48,
                                 width: 48,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xffF5F6FA),
-                                  borderRadius: BorderRadius.circular(12),
+                                  color: AppColors.background,
+                                  borderRadius:
+                                      BorderRadius.circular(AppRadius.s),
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.shopping_bag_outlined,
-                                  color: Colors.black54,
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: AppSpacing.m),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,13 +86,14 @@ class CartScreen extends StatelessWidget {
                                       style: GoogleFonts.inter(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
+                                        color: AppColors.textPrimary,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    SizedBox(height: AppSpacing.xs),
                                     Text(
                                       '\$${item.product.price} x${item.quantity}',
                                       style: GoogleFonts.inter(
-                                        color: Colors.black54,
+                                        color: AppColors.textSecondary,
                                         fontSize: 14,
                                       ),
                                     ),
@@ -96,9 +101,9 @@ class CartScreen extends StatelessWidget {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.delete_outline,
-                                  color: Colors.black54,
+                                  color: AppColors.textSecondary,
                                 ),
                                 onPressed: () {
                                   cart.removeProduct(item.product);
@@ -119,12 +124,13 @@ class CartScreen extends StatelessWidget {
           : SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                padding: EdgeInsets.fromLTRB(
+                    AppSpacing.l, AppSpacing.m, AppSpacing.l, AppSpacing.m),
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(AppSpacing.l),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(AppRadius.l),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.06),
@@ -144,6 +150,7 @@ class CartScreen extends StatelessWidget {
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                           Text(
@@ -151,19 +158,20 @@ class CartScreen extends StatelessWidget {
                             style: GoogleFonts.inter(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: AppSpacing.m),
                       SizedBox(
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff4F6EF7),
+                            backgroundColor: AppColors.primary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(AppRadius.m),
                             ),
                             elevation: 0,
                           ),
@@ -206,14 +214,14 @@ class _EmptyCartView extends StatelessWidget {
           Icon(
             Icons.shopping_cart_outlined,
             size: 64,
-            color: Colors.black.withOpacity(0.3),
+            color: AppColors.textSecondary.withOpacity(0.5),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.l),
           Text(
             'Tu carrito está vacío',
             style: GoogleFonts.inter(
               fontSize: 16,
-              color: Colors.black54,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),

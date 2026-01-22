@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
 import 'order_success_screen.dart';
+import '../../ui/design_tokens.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -23,7 +24,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       final cart = context.read<CartProvider>();
       final orderProvider = context.read<OrderProvider>();
 
-      // 🔹 SIN await - porque addOrder no retorna Future
       orderProvider.addOrder(
         cart.items,
         cart.total,
@@ -31,10 +31,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
       cart.clear();
 
-      // 🔹 Pequeña pausa para que se vea el loading
       await Future.delayed(const Duration(milliseconds: 500));
 
-      // 🔹 PASO 3 - ANIMACIÓN SUAVE
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -51,12 +49,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         );
       }
     } catch (e) {
-      // Manejo de error (opcional)
       debugPrint('Error al confirmar pedido: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Error al procesar el pedido'),
+            backgroundColor: AppColors.danger,
           ),
         );
       }
@@ -73,55 +71,59 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final bottomInset = MediaQuery.of(context).viewPadding.bottom;
 
     return Scaffold(
-      backgroundColor: const Color(0xffF5F6FA),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Checkout'),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: const Color(0xffF5F6FA),
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.textPrimary,
       ),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(AppSpacing.l),
                 child: Column(
                   children: [
-                    const _SectionCard(
+                    _SectionCard(
                       title: 'Dirección de entrega',
                       child: Text(
                         'Calle Principal #123\nCiudad, País',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.black54,
+                          color: AppColors.textSecondary,
                           height: 1.4,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    const _SectionCard(
+                    SizedBox(height: AppSpacing.l),
+                    _SectionCard(
                       title: 'Método de pago',
                       child: Row(
                         children: [
-                          Icon(Icons.credit_card, size: 20),
-                          SizedBox(width: 10),
+                          Icon(Icons.credit_card,
+                              size: 20, color: AppColors.textPrimary),
+                          SizedBox(width: AppSpacing.m),
                           Text(
                             'Tarjeta de crédito',
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: AppSpacing.l),
                     _SectionCard(
                       title: 'Resumen',
                       child: Column(
                         children: [
                           ...cart.items.map(
                             (item) => Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
+                              padding: EdgeInsets.only(bottom: AppSpacing.m),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -129,41 +131,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   Expanded(
                                     child: Text(
                                       item.product.title,
-                                      style: const TextStyle(fontSize: 15),
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: AppColors.textPrimary,
+                                      ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   Text(
                                     '\$${item.product.price} x${item.quantity}',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: AppSpacing.m),
                           const Divider(height: 1),
-                          const SizedBox(height: 12),
+                          SizedBox(height: AppSpacing.m),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Total',
                                 style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                               Text(
                                 '\$${cart.total.toStringAsFixed(2)}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xff4F6EF7),
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ],
@@ -177,19 +184,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(
-                16,
-                12,
-                16,
-                12 + bottomInset,
+                AppSpacing.l,
+                AppSpacing.m,
+                AppSpacing.l,
+                AppSpacing.m + bottomInset,
               ),
               child: SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff4F6EF7),
+                    backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.m),
                     ),
                     elevation: 0,
                   ),
@@ -197,7 +204,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ? null
                       : () => _confirmOrder(context),
                   child: _isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 22,
                           width: 22,
                           child: CircularProgressIndicator(
@@ -205,11 +212,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text(
+                      : Text(
                           'Confirmar pedido',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ),
                 ),
@@ -234,10 +242,10 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.l),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
@@ -251,13 +259,13 @@ class _SectionCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: AppSpacing.m),
           child,
         ],
       ),

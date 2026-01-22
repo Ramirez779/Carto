@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../ui/design_tokens.dart';
 
 class OrderSuccessScreen extends StatelessWidget {
   const OrderSuccessScreen({super.key});
@@ -6,10 +7,10 @@ class OrderSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF5F6FA),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -17,39 +18,58 @@ class OrderSuccessScreen extends StatelessWidget {
                 height: 120,
                 width: 120,
                 decoration: BoxDecoration(
-                  color: const Color(0xff4F6EF7).withOpacity(0.12),
+                  color: AppColors.primary.withOpacity(0.12),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.check_circle_outline,
                   size: 64,
-                  color: Color(0xff4F6EF7),
+                  color: AppColors.primary,
                 ),
               ),
-              const SizedBox(height: 24),
-              const Text(
+              SizedBox(height: AppSpacing.xl),
+              Text(
                 'Pedido confirmado',
-                style:
-                    TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: AppSpacing.m),
+              Text(
                 'Tu compra se realizó correctamente.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 16,
+                ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: AppSpacing.xl),
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.m),
+                    ),
+                  ),
                   onPressed: () {
                     Navigator.popUntil(
                       context,
                       (route) => route.isFirst,
                     );
                   },
-                  child: const Text('Volver al inicio'),
+                  child: Text(
+                    'Volver al inicio',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],
