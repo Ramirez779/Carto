@@ -23,6 +23,7 @@ A través de este proyecto se busca:
 - Construir una base sólida que pueda evolucionar en el futuro hacia una aplicación real implementando backend, autenticación y pagos.
 
 El proyecto prioriza la claridad del código, la experiencia del usuario y la mantenibilidad por encima de la cantidad de funcionalidades.
+
 ---
 
 
@@ -489,8 +490,4 @@ Gracias a la estructura actual, Carto puede escalar sin fricción hacia:
 - Nuevos flujos de usuario
 - Integración con servicios externos
 
-El proyecto fue pensado no solo para funcionar, sino para crecer de manera ordenada.
-
 ---
-
-Estas mejoras no son requisitos inmediatos, sino oportunidades claras de evolución que demuestran el potencial del proyecto más allá de su estado actual.
