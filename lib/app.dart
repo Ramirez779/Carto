@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// Design Tokens
+import 'ui/design_tokens.dart';
+
 // Screens
 import 'screens/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -12,7 +15,7 @@ import 'screens/checkout/order_success_screen.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
 
-//fonts
+// Fonts
 import 'package:google_fonts/google_fonts.dart';
 
 class CartoApp extends StatelessWidget {
@@ -30,17 +33,32 @@ class CartoApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
 
+        
         theme: ThemeData(
-          textTheme: GoogleFonts.interTextTheme(), // Tipografía Inter
-          scaffoldBackgroundColor: const Color(0xffF5F6FA),
-          useMaterial3: true, // Material Design 3
+          scaffoldBackgroundColor: AppColors.background,
+          useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xff4F6EF7), // Color principal
+            seedColor: AppColors.primary,
             brightness: Brightness.light,
+          ),
+          
+          textTheme: GoogleFonts.interTextTheme().apply(
+            bodyColor: AppColors.textPrimary,
+            displayColor: AppColors.textPrimary,
+          ),
+          
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.m),
+              ),
+              elevation: 0,
+            ),
           ),
         ),
 
-        //pantalla inicial
         initialRoute: '/splash',
 
         routes: {
