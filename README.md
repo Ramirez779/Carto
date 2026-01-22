@@ -493,5 +493,3 @@ El proyecto fue pensado no solo para funcionar, sino para crecer de manera orden
 ---
 
 Estas mejoras no son requisitos inmediatos, sino oportunidades claras de evolución que demuestran el potencial del proyecto más allá de su estado actual.
-
-tivos.
