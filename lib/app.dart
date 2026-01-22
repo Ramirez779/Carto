@@ -14,6 +14,7 @@ import 'screens/checkout/order_success_screen.dart';
 // Providers
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/profile_provider.dart'; 
 
 // Fonts
 import 'package:google_fonts/google_fonts.dart';
@@ -29,6 +30,7 @@ class CartoApp extends StatelessWidget {
           create: (_) => CartProvider()..loadCart(),
         ),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
