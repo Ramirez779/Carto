@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../checkout/checkout_screen.dart';
 import '../../ui/design_tokens.dart';
+import '../../models/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -46,71 +47,23 @@ class CartScreen extends StatelessWidget {
                           SizedBox(height: AppSpacing.m),
                       itemBuilder: (context, index) {
                         final item = cart.items[index];
-                        return Container(
-                          padding: EdgeInsets.all(AppSpacing.m),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(AppRadius.l),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 6),
+
+                        return AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              opacity: CurvedAnimation(
+                                parent: animation,
+                                curve: Curves.easeInOut,
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 48,
-                                width: 48,
-                                decoration: BoxDecoration(
-                                  color: AppColors.background,
-                                  borderRadius:
-                                      BorderRadius.circular(AppRadius.s),
-                                ),
-                                child: Icon(
-                                  Icons.shopping_bag_outlined,
-                                  color: AppColors.textSecondary,
-                                ),
+                              child: SizeTransition(
+                                sizeFactor: animation,
+                                child: child,
                               ),
-                              SizedBox(width: AppSpacing.m),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.product.title,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15,
-                                        color: AppColors.textPrimary,
-                                      ),
-                                    ),
-                                    SizedBox(height: AppSpacing.xs),
-                                    Text(
-                                      '\$${item.product.price} x${item.quantity}',
-                                      style: GoogleFonts.inter(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.delete_outline,
-                                  color: AppColors.textSecondary,
-                                ),
-                                onPressed: () {
-                                  cart.removeProduct(item.product);
-                                },
-                              ),
-                            ],
-                          ),
+                            );
+                          },
+                          child: _buildCartItem(item, cart,
+                              key: ValueKey(item.product.id)),
                         );
                       },
                     ),
@@ -198,6 +151,100 @@ class CartScreen extends StatelessWidget {
                 ),
               ),
             ),
+    );
+  }
+
+  Widget _buildCartItem(CartItem item, CartProvider cart, {required Key key}) {
+    return Container(
+      key: key,
+      padding: EdgeInsets.all(AppSpacing.m),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.l),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 48,
+            width: 48,
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppRadius.s),
+            ),
+            child: Icon(
+              Icons.shopping_bag_outlined,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          SizedBox(width: AppSpacing.m),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.product.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.xs),
+                Text(
+                  '\$${item.product.price} x${item.quantity}',
+                  style: GoogleFonts.inter(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _AnimatedDeleteButton(
+            onPressed: () => cart.removeProduct(item.product),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnimatedDeleteButton extends StatefulWidget {
+  final VoidCallback onPressed;
+
+  const _AnimatedDeleteButton({required this.onPressed});
+
+  @override
+  State<_AnimatedDeleteButton> createState() => _AnimatedDeleteButtonState();
+}
+
+class _AnimatedDeleteButtonState extends State<_AnimatedDeleteButton> {
+  bool _isTapped = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isTapped = true),
+      onTapUp: (_) => setState(() => _isTapped = false),
+      onTapCancel: () => setState(() => _isTapped = false),
+      onTap: widget.onPressed,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 150),
+        scale: _isTapped ? 0.9 : 1.0,
+        child: Icon(
+          Icons.delete_outline,
+          color: AppColors.textSecondary,
+        ),
+      ),
     );
   }
 }

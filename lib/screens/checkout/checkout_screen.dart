@@ -4,6 +4,7 @@ import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
 import 'order_success_screen.dart';
 import '../../ui/design_tokens.dart';
+import '../../models/cart_item.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -189,38 +190,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 AppSpacing.l,
                 AppSpacing.m + bottomInset,
               ),
-              child: SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.m),
-                    ),
-                    elevation: 0,
-                  ),
-                  onPressed: _isLoading || cart.items.isEmpty
-                      ? null
-                      : () => _confirmOrder(context),
-                  child: _isLoading
-                      ? SizedBox(
-                          height: 22,
-                          width: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Text(
-                          'Confirmar pedido',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                ),
+              child: _AnimatedConfirmButton(
+                isLoading: _isLoading,
+                isEnabled: !cart.items.isEmpty,
+                onPressed: () => _confirmOrder(context),
               ),
             ),
           ],
@@ -268,6 +241,77 @@ class _SectionCard extends StatelessWidget {
           SizedBox(height: AppSpacing.m),
           child,
         ],
+      ),
+    );
+  }
+}
+
+class _AnimatedConfirmButton extends StatefulWidget {
+  final bool isLoading;
+  final bool isEnabled;
+  final VoidCallback onPressed;
+
+  const _AnimatedConfirmButton({
+    required this.isLoading,
+    required this.isEnabled,
+    required this.onPressed,
+  });
+
+  @override
+  State<_AnimatedConfirmButton> createState() => _AnimatedConfirmButtonState();
+}
+
+class _AnimatedConfirmButtonState extends State<_AnimatedConfirmButton> {
+  bool _isTapped = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) {
+        if (widget.isEnabled && !widget.isLoading) {
+          setState(() => _isTapped = true);
+        }
+      },
+      onTapUp: (_) => setState(() => _isTapped = false),
+      onTapCancel: () => setState(() => _isTapped = false),
+      onTap: widget.isEnabled && !widget.isLoading ? widget.onPressed : null,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 150),
+        scale: _isTapped ? 0.97 : 1.0,
+        child: SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: widget.isEnabled
+                  ? AppColors.primary
+                  : AppColors.primary.withOpacity(0.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.m),
+              ),
+              elevation: 0,
+            ),
+            onPressed:
+                widget.isEnabled && !widget.isLoading ? widget.onPressed : null,
+            child: widget.isLoading
+                ? SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: Colors.white,
+                    ),
+                  )
+                : Text(
+                    'Confirmar pedido',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+          ),
+        ),
       ),
     );
   }
