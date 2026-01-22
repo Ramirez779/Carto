@@ -46,6 +46,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               sliver: SliverToBoxAdapter(
                 child: _ProfileHeader(
                   avatar: profile.avatar,
+                  name: profile.name,
+                  email: profile.email,
                   onTapAvatar: _pickImage,
                 ),
               ),
@@ -116,10 +118,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 class _ProfileHeader extends StatelessWidget {
   final File? avatar;
+  final String name;
+  final String email;
   final VoidCallback onTapAvatar;
 
   const _ProfileHeader({
     required this.avatar,
+    required this.name,
+    required this.email,
     required this.onTapAvatar,
   });
 
@@ -157,7 +163,7 @@ class _ProfileHeader extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            'Usuario',
+            name,
             style: TextStyle(
               fontSize: 18, 
               fontWeight: FontWeight.w600,
@@ -166,7 +172,7 @@ class _ProfileHeader extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'usuario@email.com',
+            email,
             style: TextStyle(color: AppColors.textSecondary),
           ),
         ],
