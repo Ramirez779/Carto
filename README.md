@@ -481,6 +481,9 @@ Otra mejora relevante sería la incorporación de:
 
 Esto aumentaría la confiabilidad del proyecto y lo acercaría a estándares profesionales.
 
+## 📦 Download
+You can download the latest APK from the Releases section.
+
 ### Escalabilidad del proyecto
 
 Gracias a la estructura actual, Carto puede escalar sin fricción hacia:
