@@ -34,6 +34,9 @@ El proyecto simula el flujo principal de una aplicación de e-commerce: explorac
 
 ---
 
+##  Download
+You can download the latest APK from the Releases section.
+
 ## Objetivo del proyecto
 
 El objetivo principal de Carto es servir como un proyecto de práctica y demostración enfocado en el diseño de interfaces, experiencia de usuario y arquitectura básica en Flutter.
