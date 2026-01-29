@@ -13,8 +13,6 @@ Carto fue concebido como una base visual y estructural sólida, preparada para c
 
 ## Screenshots
 
-# Carto – Flutter Shopping App
-
 ## Descripción
 Carto es un prototipo de aplicación de compras desarrollado con Flutter, enfocado en el diseño de interfaces (UI), la experiencia de usuario (UX) y una arquitectura limpia y escalable.
 
@@ -509,8 +507,19 @@ Otra mejora relevante sería la incorporación de:
 
 Esto aumentaría la confiabilidad del proyecto y lo acercaría a estándares profesionales.
 
-## 📦 Download
+## Download
 You can download the latest APK from the Releases section.
+
+## Seguridad (Análisis Estático)
+
+El APK de **release** fue analizado utilizando **MobSF (Mobile Security Framework)**.
+
+- Se realizó un análisis estático sobre la versión de lanzamiento  
+- No se detectaron problemas críticos de seguridad  
+- Utilizado como ejercicio de aprendizaje para concienciación en seguridad móvil  
+
+> **Nota:** Este proyecto es un prototipo enfocado en UI/UX, sin backend ni manejo de datos sensibles.
+
 
 ### Escalabilidad del proyecto
 
