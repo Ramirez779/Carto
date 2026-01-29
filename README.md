@@ -486,6 +486,19 @@ Aunque ya existe persistencia local para ciertos datos, se podrían explorar mej
 
 Estas mejoras permitirían una experiencia más cercana a una aplicación de producción.
 
+## Seguridad (Análisis Estático)
+
+El APK de **release** fue analizado utilizando **MobSF (Mobile Security Framework)** como ejercicio de concienciación en seguridad móvil.
+
+- Se realizó un análisis estático sobre la versión de lanzamiento
+- No se detectaron vulnerabilidades críticas
+- El análisis se ejecutó sobre el build de producción (release APK)
+
+📄 [MobSF Static Analysis Report](docs/mobsf-report/Carto-v0.1.0-MobSF-Report.pdf)
+
+> **Nota:** Carto es un prototipo enfocado en UI/UX. No incluye backend ni manejo de datos sensibles.
+
+
 ### Mejoras visuales y de experiencia de usuario
 
 El diseño puede seguir evolucionando mediante:
@@ -509,17 +522,6 @@ Esto aumentaría la confiabilidad del proyecto y lo acercaría a estándares pro
 
 ## Download
 You can download the latest APK from the Releases section.
-
-## Seguridad (Análisis Estático)
-
-El APK de **release** fue analizado utilizando **MobSF (Mobile Security Framework)**.
-
-- Se realizó un análisis estático sobre la versión de lanzamiento  
-- No se detectaron problemas críticos de seguridad  
-- Utilizado como ejercicio de aprendizaje para concienciación en seguridad móvil  
-
-> **Nota:** Este proyecto es un prototipo enfocado en UI/UX, sin backend ni manejo de datos sensibles.
-
 
 ### Escalabilidad del proyecto
 
