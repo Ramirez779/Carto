@@ -9,8 +9,6 @@ Carto fue concebido como una base visual y estructural sólida, preparada para c
 
 ---
 
----
-
 ## Screenshots
 
 ## Descripción
@@ -31,9 +29,6 @@ El proyecto simula el flujo principal de una aplicación de e-commerce: explorac
 | ![](screenshots/04-cart.png) | ![](screenshots/05-order-confirmed.png) | ![](screenshots/06-profile.png) |
 
 ---
-
-##  Download
-You can download the latest APK from the Releases section.
 
 ## Objetivo del proyecto
 
