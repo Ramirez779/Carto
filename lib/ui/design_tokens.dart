@@ -9,6 +9,7 @@ class AppColors {
   static const textSecondary = Color(0xFF6B7280);
 
   static const danger = Color(0xFFE53935);
+  static const success = Color(0xFF4CAF50); 
 }
 
 class AppSpacing {

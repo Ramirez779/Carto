@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../providers/profile_provider.dart'; 
-import '../../../ui/design_tokens.dart';         
+import '../../providers/profile_provider.dart';
+import '../../ui/design_tokens.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         imageQuality: 85,
       );
 
-      if (image != null) {
+      if (image != null && mounted) {
         final profileProvider = context.read<ProfileProvider>();
         profileProvider.setAvatar(File(image.path));
       }
@@ -42,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
               sliver: SliverToBoxAdapter(
                 child: _ProfileHeader(
                   avatar: profile.avatar,
@@ -53,8 +53,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 28)),
+            const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
+            // SECCIÓN CUENTA
             const SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
@@ -68,18 +69,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
-                  const [
+                  [
                     _ProfileTile(
-                      icon: Icons.receipt_long,
+                      icon: Icons.receipt_long_outlined,
                       title: 'Mis pedidos',
+                      onTap: () {},
                     ),
                     _ProfileTile(
-                      icon: Icons.favorite_border,
+                      icon: Icons.favorite_outline,
                       title: 'Favoritos',
+                      onTap: () {},
                     ),
                     _ProfileTile(
-                      icon: Icons.settings,
+                      icon: Icons.settings_outlined,
                       title: 'Configuración',
+                      onTap: () {},
                     ),
                   ],
                 ),
@@ -88,6 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
+            // SECCIÓN SESIÓN
             const SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
@@ -97,18 +102,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: _ProfileTile(
-                  icon: Icons.logout,
+                  icon: Icons.logout_outlined,
                   title: 'Cerrar sesión',
                   isLogout: true,
+                  onTap: () {},
                 ),
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 40)),
+            const SliverToBoxAdapter(child: SizedBox(height: 48)),
           ],
         ),
       ),
@@ -132,48 +138,66 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.l),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromARGB(15, 0, 0, 0),
-            blurRadius: 12,
-            offset: Offset(0, 6),
-          ),
-        ],
+        border: Border.all(
+          color: Colors.black.withOpacity(0.05),
+          width: 1,
+        ),
       ),
       child: Column(
         children: [
           GestureDetector(
             onTap: onTapAvatar,
-            child: CircleAvatar(
-              radius: 48,
-              backgroundColor: AppColors.background,
-              backgroundImage: avatar != null ? FileImage(avatar!) : null,
-              child: avatar == null
-                  ? Icon(
-                      Icons.camera_alt,
-                      size: 28,
-                      color: AppColors.textSecondary,
-                    )
-                  : null,
+            child: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: AppColors.background,
+                  backgroundImage: avatar != null ? FileImage(avatar!) : null,
+                  child: avatar == null
+                      ? Icon(
+                          Icons.person_outline,
+                          size: 40,
+                          color: AppColors.textSecondary,
+                        )
+                      : null,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: const Icon(
+                    Icons.camera_alt_outlined,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Text(
             name,
             style: TextStyle(
-              fontSize: 18, 
-              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             email,
-            style: TextStyle(color: AppColors.textSecondary),
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
@@ -188,78 +212,98 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: AppColors.textSecondary,
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textSecondary,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
 }
 
-class _ProfileTile extends StatelessWidget {
+class _ProfileTile extends StatefulWidget {
   final IconData icon;
   final String title;
   final bool isLogout;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   const _ProfileTile({
     required this.icon,
     required this.title,
     this.isLogout = false,
-    this.onTap,
+    required this.onTap,
   });
 
   @override
+  State<_ProfileTile> createState() => _ProfileTileState();
+}
+
+class _ProfileTileState extends State<_ProfileTile> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.l),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromARGB(13, 0, 0, 0),
-            blurRadius: 10,
-            offset: Offset(0, 6),
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTap: widget.onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: _isPressed
+              ? AppColors.background
+              : AppColors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.m),
+          border: Border.all(
+            color: Colors.black.withOpacity(0.03),
+            width: 1,
           ),
-        ],
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.l),
+        ),
         child: Row(
           children: [
             Container(
-              height: 36,
-              width: 36,
+              height: 40,
+              width: 40,
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: widget.isLogout
+                    ? AppColors.danger.withOpacity(0.1)
+                    : AppColors.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(AppRadius.s),
               ),
               child: Icon(
-                icon,
+                widget.icon,
                 size: 20,
-                color: isLogout ? AppColors.danger : AppColors.textPrimary,
+                color: widget.isLogout
+                    ? AppColors.danger
+                    : AppColors.primary,
               ),
             ),
-            const SizedBox(width: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: isLogout ? AppColors.danger : AppColors.textPrimary,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                widget.title,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: widget.isLogout
+                      ? AppColors.danger
+                      : AppColors.textPrimary,
+                ),
               ),
             ),
-            const Spacer(),
             Icon(
-              Icons.arrow_forward_ios,
+              Icons.arrow_forward_ios_rounded,
               size: 16,
-              color: AppColors.textSecondary,
+              color: AppColors.textSecondary.withOpacity(0.5),
             ),
           ],
         ),

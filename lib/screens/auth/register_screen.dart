@@ -18,6 +18,9 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   bool _obscure = true;
   bool _loading = false;
+  bool _showNameError = false;
+  bool _showEmailError = false;
+  bool _showPasswordError = false;
 
   late AnimationController _controller;
   late Animation<double> _fade;
@@ -45,6 +48,11 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
 
     _controller.forward();
+
+    // Validación en tiempo real
+    _nameController.addListener(_validateName);
+    _emailController.addListener(_validateEmail);
+    _passwordController.addListener(_validatePassword);
   }
 
   @override
@@ -56,7 +64,45 @@ class _RegisterScreenState extends State<RegisterScreen>
     super.dispose();
   }
 
+  // ============ VALIDACIÓN ============
+  bool get _isFormValid {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final pass = _passwordController.text.trim();
+    final emailValid = _isValidEmail(email);
+    return name.isNotEmpty && email.isNotEmpty && pass.isNotEmpty && emailValid;
+  }
+
+  bool _isValidEmail(String email) {
+    return email.contains('@') && email.contains('.');
+  }
+
+  void _validateName() {
+    setState(() => _showNameError = _nameController.text.isEmpty);
+  }
+
+  void _validateEmail() {
+    if (_emailController.text.isEmpty) {
+      setState(() => _showEmailError = false);
+      return;
+    }
+    final isValid = _isValidEmail(_emailController.text.trim());
+    setState(() => _showEmailError = !isValid);
+  }
+
+  void _validatePassword() {
+    if (_passwordController.text.isEmpty) {
+      setState(() => _showPasswordError = false);
+      return;
+    }
+    final isValid = _passwordController.text.trim().length >= 6;
+    setState(() => _showPasswordError = !isValid);
+  }
+
   void _registerFake() async {
+    // Validación final
+    if (!_isFormValid) return;
+
     setState(() => _loading = true);
 
     await Future.delayed(const Duration(milliseconds: 700));
@@ -85,22 +131,65 @@ class _RegisterScreenState extends State<RegisterScreen>
                 child: AuthCard(
                   title: 'Crear cuenta',
                   children: [
+                    // Nombre
                     _input(
                       controller: _nameController,
-                      hint: 'Nombre',
+                      hint: 'Nombre completo',
                       icon: Icons.person_outline,
+                      showError: _showNameError,
                     ),
-                    const SizedBox(height: 14),
+                    if (_showNameError && _nameController.text.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4, left: 16),
+                        child: Text(
+                          'El nombre es requerido',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.red[700],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+                    
+                    // Email
                     _input(
                       controller: _emailController,
                       hint: 'Correo electrónico',
                       icon: Icons.email_outlined,
+                      showError: _showEmailError,
                     ),
-                    const SizedBox(height: 14),
+                    if (_showEmailError && _emailController.text.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4, left: 16),
+                        child: Text(
+                          'Ingresa un email válido',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.red[700],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+                    
+                    // Password
                     _passwordInput(),
+                    if (_showPasswordError && _passwordController.text.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4, left: 16),
+                        child: Text(
+                          'Mínimo 6 caracteres',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.red[700],
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 22),
+                    
+                    // Botón de registro
                     _registerButton(),
                     const SizedBox(height: 20),
+                    
                     _footerLogin(),
                   ],
                 ),
@@ -116,6 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     required TextEditingController controller,
     required String hint,
     required IconData icon,
+    bool showError = false,
   }) {
     return TextField(
       controller: controller,
@@ -123,7 +213,9 @@ class _RegisterScreenState extends State<RegisterScreen>
         hintText: hint,
         prefixIcon: Icon(icon, size: 20),
         filled: true,
-        fillColor: const Color(0xffF6F7FB),
+        fillColor: showError 
+            ? Colors.red[50]?.withOpacity(0.3)
+            : const Color(0xffF6F7FB),
         contentPadding: const EdgeInsets.symmetric(
           vertical: 14,
           horizontal: 16,
@@ -132,6 +224,15 @@ class _RegisterScreenState extends State<RegisterScreen>
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
+        enabledBorder: showError
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: Colors.red[300]!, width: 1),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xffE2E6F0), width: 1),
+              ),
       ),
     );
   }
@@ -147,13 +248,16 @@ class _RegisterScreenState extends State<RegisterScreen>
           icon: Icon(
             _obscure ? Icons.visibility_off : Icons.visibility,
             size: 20,
+            color: Colors.grey[600],
           ),
           onPressed: () {
             setState(() => _obscure = !_obscure);
           },
         ),
         filled: true,
-        fillColor: const Color(0xffF6F7FB),
+        fillColor: _showPasswordError
+            ? Colors.red[50]?.withOpacity(0.3)
+            : const Color(0xffF6F7FB),
         contentPadding: const EdgeInsets.symmetric(
           vertical: 14,
           horizontal: 16,
@@ -162,22 +266,35 @@ class _RegisterScreenState extends State<RegisterScreen>
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
+        enabledBorder: _showPasswordError
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: Colors.red[300]!, width: 1),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xffE2E6F0), width: 1),
+              ),
       ),
     );
   }
 
   Widget _registerButton() {
+    final isDisabled = !_isFormValid || _loading;
+    
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: ElevatedButton(
-        onPressed: _loading ? null : _registerFake,
+        onPressed: isDisabled ? null : _registerFake,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff4F6EF7),
+          backgroundColor: const Color(0xff4F6EF7), // SIEMPRE AZUL
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
           ),
-          elevation: 0,
+          elevation: isDisabled ? 0 : 1,
+          shadowColor: const Color(0xff4F6EF7).withOpacity(0.2),
         ),
         child: _loading
             ? const SizedBox(
@@ -188,11 +305,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                   color: Colors.white,
                 ),
               )
-            : const Text(
+            : Text(
                 'Crear cuenta',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: isDisabled ? Colors.white.withOpacity(0.8) : Colors.white,
                 ),
               ),
       ),
@@ -203,7 +321,13 @@ class _RegisterScreenState extends State<RegisterScreen>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('¿Ya tienes cuenta?'),
+        Text(
+          '¿Ya tienes cuenta?',
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+          ),
+        ),
         TextButton(
           onPressed: () {
             Navigator.pushReplacement(
@@ -213,7 +337,17 @@ class _RegisterScreenState extends State<RegisterScreen>
               ),
             );
           },
-          child: const Text('Inicia sesión'),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          ),
+          child: const Text(
+            'Inicia sesión',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xff4F6EF7),
+            ),
+          ),
         ),
       ],
     );
