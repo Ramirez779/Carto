@@ -35,15 +35,40 @@ class ProductCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(
-                child: Center(
-                  child: Icon(
-                    Icons.shopping_bag_outlined,
-                    size: 42,
-                    color: Colors.black87,
-                  ),
+              // IMAGEN DE RED
+              Container(
+                height: 100,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey[200],
                 ),
+                child: product.image != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          product.image!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(
+                              child: Icon(
+                                Icons.error_outline,
+                                size: 42,
+                                color: Colors.red,
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : const Center(
+                        child: Icon(
+                          Icons.shopping_bag_outlined,
+                          size: 42,
+                          color: Colors.grey,
+                        ),
+                      ),
               ),
+              const SizedBox(height: 12),
               Text(
                 product.title,
                 maxLines: 1,
