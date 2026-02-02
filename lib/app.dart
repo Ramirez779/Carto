@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Design Tokens
+//Design Tokens (colores, radios, estilos globales)
 import 'ui/design_tokens.dart';
 
-// Screens
+//Screens
 import 'screens/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/main_shell.dart';
 import 'screens/checkout/order_success_screen.dart';
 
-// Providers
+//Providers (estado global de la app)
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
-import 'providers/profile_provider.dart'; 
+import 'providers/profile_provider.dart';
 
-// Fonts
+//Fuente personalizada
 import 'package:google_fonts/google_fonts.dart';
 
 class CartoApp extends StatelessWidget {
@@ -25,17 +25,22 @@ class CartoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
+      //Registro de providers globales
       providers: [
         ChangeNotifierProvider(
+          //Proveedor del carrito con carga inicial
           create: (_) => CartProvider()..loadCart(),
         ),
+        //Proveedor de órdenes
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        //Proveedor de perfil de usuario
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MaterialApp(
+        //Oculta la etiqueta de debug
         debugShowCheckedModeBanner: false,
 
-        
+        //Tema global de la aplicación
         theme: ThemeData(
           scaffoldBackgroundColor: AppColors.background,
           useMaterial3: true,
@@ -43,12 +48,14 @@ class CartoApp extends StatelessWidget {
             seedColor: AppColors.primary,
             brightness: Brightness.light,
           ),
-          
+
+          //Tipografía global
           textTheme: GoogleFonts.interTextTheme().apply(
             bodyColor: AppColors.textPrimary,
             displayColor: AppColors.textPrimary,
           ),
-          
+
+          //Estilo global de botones elevados
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
@@ -61,8 +68,10 @@ class CartoApp extends StatelessWidget {
           ),
         ),
 
+        //Ruta inicial de la app
         initialRoute: '/splash',
 
+        //Definición de rutas
         routes: {
           '/splash': (context) => const SplashScreen(),
           '/login': (context) => const LoginScreen(),
