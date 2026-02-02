@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:carto/models/product.dart';
 
+//Tarjeta reutilizable para mostrar un producto
 class ProductCard extends StatelessWidget {
+  //Información del producto
   final Product product;
+
+  //Acción al tocar la tarjeta
   final VoidCallback onTap;
 
   const ProductCard({
@@ -14,14 +18,17 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
+      //Mejora accesibilidad indicando que es un botón
       button: true,
       label: 'Producto ${product.title}, precio ${product.price} dólares',
       child: InkWell(
+        //Maneja el evento de toque
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
+            //Estilo visual de la tarjeta
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -35,7 +42,7 @@ class ProductCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // IMAGEN DE RED
+              //Contenedor de imagen del producto
               Container(
                 height: 100,
                 width: double.infinity,
@@ -44,11 +51,13 @@ class ProductCard extends StatelessWidget {
                   color: Colors.grey[200],
                 ),
                 child: product.image != null
+                    //Imagen cargada desde red
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
                           product.image!,
                           fit: BoxFit.cover,
+                          //Manejo de error al cargar la imagen
                           errorBuilder: (context, error, stackTrace) {
                             return const Center(
                               child: Icon(
@@ -60,6 +69,7 @@ class ProductCard extends StatelessWidget {
                           },
                         ),
                       )
+                    //Icono por defecto si no hay imagen
                     : const Center(
                         child: Icon(
                           Icons.shopping_bag_outlined,
@@ -69,6 +79,7 @@ class ProductCard extends StatelessWidget {
                       ),
               ),
               const SizedBox(height: 12),
+              //Nombre del producto
               Text(
                 product.title,
                 maxLines: 1,
@@ -79,6 +90,7 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
+              //Precio del producto
               Text(
                 '\$${product.price}',
                 style: const TextStyle(

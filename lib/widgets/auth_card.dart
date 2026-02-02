@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+//Tarjeta reutilizable para pantallas de autenticación
 class AuthCard extends StatelessWidget {
+  //Título principal de la tarjeta
   final String title;
+
+  //Contenido dinámico (inputs, botones, etc.)
   final List<Widget> children;
 
   const AuthCard({
@@ -13,9 +17,11 @@ class AuthCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      //Limita el ancho máximo en pantallas grandes
       constraints: const BoxConstraints(maxWidth: 420),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
+        //Estilo visual de la tarjeta
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
@@ -29,6 +35,7 @@ class AuthCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          //Título de la sección
           Text(
             title,
             style: const TextStyle(
@@ -37,6 +44,7 @@ class AuthCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
+          //Inserta los widgets recibidos
           ...children,
         ],
       ),

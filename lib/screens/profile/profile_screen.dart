@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../ui/design_tokens.dart';
 
+//Pantalla de perfil del usuario
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -13,8 +14,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  //Selector de imágenes desde galería
   final ImagePicker _picker = ImagePicker();
 
+  //Abre la galería y guarda el avatar seleccionado
   Future<void> _pickImage() async {
     try {
       final XFile? image = await _picker.pickImage(
@@ -33,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //Obtiene los datos del perfil desde el provider
     final profile = context.watch<ProfileProvider>();
 
     return Scaffold(
@@ -41,6 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
+            //Encabezado del perfil
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
               sliver: SliverToBoxAdapter(
@@ -55,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
-            // SECCIÓN CUENTA
+            // ==========SECCIÓN CUENTA==========
             const SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
@@ -65,21 +70,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
+            //Opciones de cuenta
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
+                    //pedidos
                     _ProfileTile(
                       icon: Icons.receipt_long_outlined,
                       title: 'Mis pedidos',
                       onTap: () {},
-                    ),
+                    ), //favoritos
                     _ProfileTile(
                       icon: Icons.favorite_outline,
                       title: 'Favoritos',
                       onTap: () {},
-                    ),
+                    ), //configuración
                     _ProfileTile(
                       icon: Icons.settings_outlined,
                       title: 'Configuración',
@@ -92,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-            // SECCIÓN SESIÓN
+            // ==========SECCIÓN SESIÓN===========
             const SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
@@ -102,6 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
+            // Opción de cerrar sesión
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
@@ -122,6 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
+//Encabezado del perfil con avatar y datos básicos
 class _ProfileHeader extends StatelessWidget {
   final File? avatar;
   final String name;
@@ -149,6 +158,7 @@ class _ProfileHeader extends StatelessWidget {
       ),
       child: Column(
         children: [
+          //Avatar editable
           GestureDetector(
             onTap: onTapAvatar,
             child: Stack(
@@ -166,6 +176,7 @@ class _ProfileHeader extends StatelessWidget {
                         )
                       : null,
                 ),
+                //Icono de cámara
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
@@ -183,6 +194,7 @@ class _ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
+          //Nombre del usuario
           Text(
             name,
             style: TextStyle(
@@ -192,6 +204,7 @@ class _ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
+          //Correo del usuario
           Text(
             email,
             style: TextStyle(
@@ -205,6 +218,7 @@ class _ProfileHeader extends StatelessWidget {
   }
 }
 
+//Título reutilizable para secciones
 class _SectionTitle extends StatelessWidget {
   final String title;
 
@@ -227,6 +241,7 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
+//Tile interactivo del menú de perfil
 class _ProfileTile extends StatefulWidget {
   final IconData icon;
   final String title;
@@ -245,6 +260,7 @@ class _ProfileTile extends StatefulWidget {
 }
 
 class _ProfileTileState extends State<_ProfileTile> {
+  //Controla el efecto visual al presionar
   bool _isPressed = false;
 
   @override
@@ -259,9 +275,8 @@ class _ProfileTileState extends State<_ProfileTile> {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: _isPressed
-              ? AppColors.background
-              : AppColors.surface,
+          //Cambia color al presionar
+          color: _isPressed ? AppColors.background : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.m),
           border: Border.all(
             color: Colors.black.withOpacity(0.03),
@@ -270,6 +285,7 @@ class _ProfileTileState extends State<_ProfileTile> {
         ),
         child: Row(
           children: [
+            //Icono principal
             Container(
               height: 40,
               width: 40,
@@ -282,12 +298,11 @@ class _ProfileTileState extends State<_ProfileTile> {
               child: Icon(
                 widget.icon,
                 size: 20,
-                color: widget.isLogout
-                    ? AppColors.danger
-                    : AppColors.primary,
+                color: widget.isLogout ? AppColors.danger : AppColors.primary,
               ),
             ),
             const SizedBox(width: 14),
+            //Texto de la opción
             Expanded(
               child: Text(
                 widget.title,
@@ -300,6 +315,7 @@ class _ProfileTileState extends State<_ProfileTile> {
                 ),
               ),
             ),
+            //Indicador de navegación
             Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,

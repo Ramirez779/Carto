@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//Pantalla que se muestra al confirmar exitosamente un pedido
 class OrderSuccessScreen extends StatelessWidget {
   const OrderSuccessScreen({super.key});
 
@@ -13,7 +14,7 @@ class OrderSuccessScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 🔹 Icono con diseño mejorado
+              //Icono de confirmación con efecto visual
               Container(
                 height: 120,
                 width: 120,
@@ -35,9 +36,9 @@ class OrderSuccessScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 28), // 🔹 Espacio mayor
+              const SizedBox(height: 28),
 
-              // 🔹 Título principal mejorado
+              //Título principal de confirmación
               const Text(
                 '¡Pedido confirmado!',
                 textAlign: TextAlign.center,
@@ -49,9 +50,9 @@ class OrderSuccessScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 14), // 🔹 Espacio consistente
+              const SizedBox(height: 14),
 
-              // 🔹 Subtítulo mejorado
+              //Mensaje descriptivo del estado del pedido
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
@@ -65,9 +66,9 @@ class OrderSuccessScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 36), // 🔹 Espacio antes del botón
+              const SizedBox(height: 36),
 
-              // 🔹 Botón principal
+              //Botón principal para volver al inicio
               SizedBox(
                 width: double.infinity,
                 height: 54,
@@ -80,6 +81,7 @@ class OrderSuccessScreen extends StatelessWidget {
                     elevation: 0,
                   ),
                   onPressed: () {
+                    //Navega hasta la primera pantalla de la pila
                     Navigator.popUntil(
                       context,
                       (route) => route.isFirst,
@@ -95,15 +97,15 @@ class OrderSuccessScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16), // 🔹 Espacio entre botones
+              const SizedBox(height: 16),
 
-              // 🔹 Botón secundario (opcional)
+              //Botón secundario para ver pedidos
               SizedBox(
                 width: double.infinity,
                 height: 54,
                 child: TextButton(
                   onPressed: () {
-                    // Navegar a pantalla de pedidos
+                    //Navegar a pantalla de pedidos (implementación pendiente)
                   },
                   child: const Text(
                     'Ver mis pedidos',

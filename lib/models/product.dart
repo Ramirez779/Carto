@@ -1,7 +1,15 @@
+//Modelo que representa un producto
 class Product {
+  //Identificador único del producto
   final String id;
+
+  //Nombre o título del producto
   final String title;
+
+  //Precio del producto
   final double price;
+
+  //URL de la imagen del producto
   final String? image;
 
   Product({
@@ -11,6 +19,7 @@ class Product {
     this.image,
   });
 
+  //Convierte el producto a JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -20,6 +29,7 @@ class Product {
     };
   }
 
+  //Crea un producto a partir de un JSON
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id'] as String,

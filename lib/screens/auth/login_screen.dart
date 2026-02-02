@@ -3,6 +3,7 @@ import '../main_shell.dart';
 import 'register_screen.dart';
 import '/widgets/auth_card.dart';
 
+//Pantalla de inicio de sesión
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -15,19 +16,20 @@ class _LoginScreenState extends State<LoginScreen>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _obscure = true;
-  bool _loading = false;
-  bool _showEmailError = false;
-  bool _showPasswordError = false;
+  bool _obscure = true; //Controla visibilidad de contraseña
+  bool _loading = false; //Estado de carga del botón
+  bool _showEmailError = false; //Error de email
+  bool _showPasswordError = false; //Error de contraseña
 
-  late AnimationController _controller;
-  late Animation<double> _fade;
-  late Animation<Offset> _slide;
+  late AnimationController _controller; //Controlador de animaciones
+  late Animation<double> _fade; //Animación de opacidad
+  late Animation<Offset> _slide; //Animación de deslizamiento
 
   @override
   void initState() {
     super.initState();
 
+    //Configuración de animaciones de entrada
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 450),
@@ -47,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen>
 
     _controller.forward();
 
-    // Validación en tiempo real
+    //Validación en tiempo real de campos
     _emailController.addListener(_validateEmail);
     _passwordController.addListener(_validatePassword);
   }
@@ -60,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
-  // ============ VALIDACIÓN ============
+  //============ VALIDACIÓN ============
   bool get _isFormValid {
     final email = _emailController.text.trim();
     final pass = _passwordController.text.trim();
@@ -68,10 +70,12 @@ class _LoginScreenState extends State<LoginScreen>
     return email.isNotEmpty && pass.isNotEmpty && emailValid;
   }
 
+  //Valida formato básico de email
   bool _isValidEmail(String email) {
     return email.contains('@') && email.contains('.');
   }
 
+  //Valida email en tiempo real
   void _validateEmail() {
     if (_emailController.text.isEmpty) {
       setState(() => _showEmailError = false);
@@ -81,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen>
     setState(() => _showEmailError = !isValid);
   }
 
+  //Valida contraseña en tiempo real (mínimo 6 caracteres)
   void _validatePassword() {
     if (_passwordController.text.isEmpty) {
       setState(() => _showPasswordError = false);
@@ -90,8 +95,8 @@ class _LoginScreenState extends State<LoginScreen>
     setState(() => _showPasswordError = !isValid);
   }
 
+  //Simulación de login con email/contraseña
   void _loginFake() async {
-    // Validación final
     if (!_isFormValid) return;
 
     setState(() => _loading = true);
@@ -100,12 +105,14 @@ class _LoginScreenState extends State<LoginScreen>
 
     if (!mounted) return;
 
+    //Navega a la pantalla principal
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const MainShell()),
     );
   }
 
+  //Simulación de login con Google
   void _loginGoogleFake() {
     Navigator.pushReplacement(
       context,
@@ -128,13 +135,14 @@ class _LoginScreenState extends State<LoginScreen>
                 child: AuthCard(
                   title: 'Iniciar sesión',
                   children: [
-                    // Email con validación
+                    //Campo de email con validación visual
                     _input(
                       controller: _emailController,
                       hint: 'Correo electrónico',
                       icon: Icons.email_outlined,
                       showError: _showEmailError,
                     ),
+                    //Mensaje de error para email
                     if (_showEmailError && _emailController.text.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 4, left: 16),
@@ -147,10 +155,12 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
                       ),
                     const SizedBox(height: 10),
-                    
-                    // Password con validación
+
+                    //Campo de contraseña con toggle de visibilidad
                     _passwordInput(),
-                    if (_showPasswordError && _passwordController.text.isNotEmpty)
+                    //Mensaje de error para contraseña
+                    if (_showPasswordError &&
+                        _passwordController.text.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 4, left: 16),
                         child: Text(
@@ -162,18 +172,20 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
                       ),
                     const SizedBox(height: 22),
-                    
-                    // Botón principal
+
+                    //Botón principal de inicio de sesión
                     _loginButton(),
                     const SizedBox(height: 18),
-                    
+
+                    //Divisor para opciones alternativas
                     _divider(),
                     const SizedBox(height: 18),
-                    
-                    // Botón Google
+
+                    //Botón para login con Google
                     _googleButton(),
                     const SizedBox(height: 20),
-                    
+
+                    //Enlace a pantalla de registro
                     _footerRegister(),
                   ],
                 ),
@@ -185,6 +197,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
+  //Widget reutilizable para campos de texto
   Widget _input({
     required TextEditingController controller,
     required String hint,
@@ -197,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen>
         hintText: hint,
         prefixIcon: Icon(icon, size: 20),
         filled: true,
-        fillColor: showError 
+        fillColor: showError
             ? Colors.red[50]?.withOpacity(0.3)
             : const Color(0xffF6F7FB),
         contentPadding: const EdgeInsets.symmetric(
@@ -215,12 +228,14 @@ class _LoginScreenState extends State<LoginScreen>
               )
             : OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xffE2E6F0), width: 1),
+                borderSide:
+                    const BorderSide(color: Color(0xffE2E6F0), width: 1),
               ),
       ),
     );
   }
 
+  //Campo de contraseña con ícono de visibilidad
   Widget _passwordInput() {
     return TextField(
       controller: _passwordController,
@@ -235,7 +250,6 @@ class _LoginScreenState extends State<LoginScreen>
             color: Colors.grey[600],
           ),
           onPressed: () {
-            // SOLO cambia la visibilidad, NO navega
             setState(() => _obscure = !_obscure);
           },
         ),
@@ -258,22 +272,24 @@ class _LoginScreenState extends State<LoginScreen>
               )
             : OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xffE2E6F0), width: 1),
+                borderSide:
+                    const BorderSide(color: Color(0xffE2E6F0), width: 1),
               ),
       ),
     );
   }
 
+  //Botón principal de login
   Widget _loginButton() {
     final isDisabled = !_isFormValid || _loading;
-    
+
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: ElevatedButton(
         onPressed: isDisabled ? null : _loginFake,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff4F6EF7), // SIEMPRE AZUL
+          backgroundColor: const Color(0xff4F6EF7),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -295,13 +311,15 @@ class _LoginScreenState extends State<LoginScreen>
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: isDisabled ? Colors.white.withOpacity(0.8) : Colors.white,
+                  color:
+                      isDisabled ? Colors.white.withOpacity(0.8) : Colors.white,
                 ),
               ),
       ),
     );
   }
 
+  //Divisor visual entre opciones de login
   Widget _divider() {
     return Row(
       children: [
@@ -325,6 +343,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
+  //Botón para login con Google
   Widget _googleButton() {
     return SizedBox(
       width: double.infinity,
@@ -351,6 +370,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
+  //Pie de página con enlace a registro
   Widget _footerRegister() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

@@ -2,20 +2,27 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//Provider encargado de gestionar la información del perfil del usuario
 class ProfileProvider extends ChangeNotifier {
+  //Avatar del usuario almacenado localmente
   File? _avatar;
   String? _avatarPath;
+
+  //Información básica del perfil
   String _name = 'Usuario';
   String _email = 'usuario@email.com';
 
+  //Getters públicos
   String get name => _name;
   String get email => _email;
   File? get avatar => _avatar;
 
   ProfileProvider() {
+    //Carga los datos del perfil al inicializar el provider
     _loadAvatar();
   }
 
+  //Carga avatar y datos básicos desde SharedPreferences
   Future<void> _loadAvatar() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -24,6 +31,7 @@ class ProfileProvider extends ChangeNotifier {
       _name = prefs.getString('profile_name') ?? 'Usuario';
       _email = prefs.getString('profile_email') ?? 'usuario@email.com';
 
+      //Verifica que el archivo del avatar exista
       if (path != null && await File(path).exists()) {
         _avatar = File(path);
         _avatarPath = path;
@@ -35,6 +43,7 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  //Actualiza nombre y correo del usuario
   Future<void> setBasicInfo({
     required String name,
     required String email,
@@ -48,6 +57,7 @@ class ProfileProvider extends ChangeNotifier {
     await prefs.setString('profile_email', email);
   }
 
+  //Guarda un nuevo avatar del usuario
   Future<void> setAvatar(File image) async {
     try {
       _avatar = image;
@@ -61,6 +71,7 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  //Elimina el avatar guardado
   Future<void> removeAvatar() async {
     try {
       _avatar = null;
@@ -74,5 +85,6 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  //Indica si el usuario tiene avatar asignado
   bool get hasAvatar => _avatar != null;
 }

@@ -1,4 +1,6 @@
-# Miscellaneous
+# Archivo .gitignore - Especifica archivos y directorios a excluir del control de versiones
+
+# Archivos misceláneos del sistema y editores
 *.class
 *.log
 *.pyc
@@ -12,18 +14,19 @@
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# Archivos de configuración de IntelliJ/Android Studio
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
+# Directorio de configuración de VS Code
+# El directorio .vscode contiene configuraciones de lanzamiento y tareas
+# que pueden querer incluirse en control de versiones, por eso esta línea
+# está comentada por defecto.
 #.vscode/
 
-# Flutter/Dart/Pub related
+# Archivos relacionados con Flutter, Dart y Pub
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -33,13 +36,13 @@ migrate_working_dir/
 /build/
 /coverage/
 
-# Symbolication related
+# Archivos de symbolication para depuración
 app.*.symbols
 
-# Obfuscation related
+# Archivos relacionados con ofuscación de código
 app.*.map.json
 
-# Android Studio will place build artifacts here
+# Artefactos de compilación generados por Android Studio
 /android/app/debug
 /android/app/profile
 /android/app/release

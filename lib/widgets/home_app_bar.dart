@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:carto/providers/cart_provider.dart';
 import 'package:carto/screens/cart/cart_screen.dart';
 
+//AppBar personalizado para la pantalla principal
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key});
 
@@ -14,6 +15,7 @@ class HomeAppBar extends StatelessWidget {
         height: 56,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
+          //Estilo visual del AppBar
           color: Colors.white,
           boxShadow: [
             BoxShadow(
@@ -25,27 +27,38 @@ class HomeAppBar extends StatelessWidget {
         ),
         child: Row(
           children: [
+            //Título del AppBar
             const Text(
               'Explorar productos',
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
-            IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-            //Reemplazamos el icono de carrito aqui
+
+            //Botón de búsqueda
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {},
+            ),
+
+            //Icono de carrito con contador dinámico
             Consumer<CartProvider>(
               builder: (context, cart, _) {
                 return Stack(
                   children: [
+                    //Botón que abre la pantalla del carrito
                     IconButton(
                       icon: const Icon(Icons.shopping_cart_outlined),
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const CartScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const CartScreen(),
+                          ),
                         );
                       },
                     ),
-                    //Badge
+
+                    //Badge con la cantidad de productos
                     if (cart.items.isNotEmpty)
                       Positioned(
                         right: 6,

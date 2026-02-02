@@ -1,33 +1,52 @@
-name: carto
-description: A modern shopping app UI prototype
-publish_to: "none"
+# Archivo de configuración principal del proyecto Flutter
+name: carto # Nombre del proyecto/paquete
+description: A modern shopping app UI prototype # Descripción del prototipo de aplicación
+publish_to: "none" # Evita publicación accidental en pub.dev
 
-version: 1.0.0+1
+version: 1.0.0+1 # Versión inicial del proyecto
 
+# Configuración del entorno de desarrollo
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0" # Versión del SDK de Dart requerida
 
+# Dependencias principales del proyecto
 dependencies:
   flutter:
-    sdk: flutter
+    sdk: flutter # SDK base de Flutter
 
+  # Manejo de imágenes desde dispositivo
   image_picker: ^1.0.7
+  
+  # Gestión de permisos de la aplicación
   permission_handler: ^11.3.0
 
+  # Gestión de estado de la aplicación
   provider: ^6.1.2
+  
+  # Almacenamiento local de preferencias
   shared_preferences: ^2.2.0
+  
+  # Iconos específicos de iOS/Cupertino
   cupertino_icons: ^1.0.8
+  
+  # Fuentes personalizadas de Google
   google_fonts: ^7.1.0
+  
+  # Renderizado de archivos SVG
   flutter_svg: ^2.0.10
 
-
+# Dependencias para desarrollo y testing
 dev_dependencies:
   flutter_test:
-    sdk: flutter
+    sdk: flutter # Framework de testing de Flutter
+  
+  # Herramientas de linting para buenas prácticas
   flutter_lints: ^3.0.0
 
+# Configuración específica de Flutter
 flutter:
-  uses-material-design: true
+  uses-material-design: true # Habilita diseño Material Design
 
+  # Recursos estáticos del proyecto
   assets:
-    - assets/logo_carto.jpg
+    - assets/logo_carto.jpg # Logo de la aplicación

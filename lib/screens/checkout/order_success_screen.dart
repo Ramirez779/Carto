@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../ui/design_tokens.dart';
 
+//Pantalla de confirmación de pedido exitoso
 class OrderSuccessScreen extends StatelessWidget {
   const OrderSuccessScreen({super.key});
 
@@ -14,12 +15,12 @@ class OrderSuccessScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ANIMACIÓN MEJORADA
+              //Animación de éxito
               _EnhancedSuccessAnimation(),
-              
+
               SizedBox(height: AppSpacing.xl),
-              
-              // TÍTULO CON GRADIENTE
+
+              //Título con efecto gradiente
               ShaderMask(
                 shaderCallback: (bounds) {
                   return LinearGradient(
@@ -38,10 +39,10 @@ class OrderSuccessScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               SizedBox(height: AppSpacing.m),
-              
-              // MENSAJE SECUNDARIO
+
+              //Mensaje principal
               Text(
                 'Tu compra se procesó exitosamente',
                 textAlign: TextAlign.center,
@@ -51,10 +52,10 @@ class OrderSuccessScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              
+
               SizedBox(height: AppSpacing.s),
-              
-              // DETALLE ADICIONAL
+
+              //Mensaje secundario
               Text(
                 'Recibirás un correo de confirmación pronto',
                 textAlign: TextAlign.center,
@@ -63,10 +64,10 @@ class OrderSuccessScreen extends StatelessWidget {
                   fontSize: 14,
                 ),
               ),
-              
+
               SizedBox(height: AppSpacing.xl * 2),
-              
-              // BOTÓN MEJORADO
+
+              //Botón principal: volver al inicio
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -81,6 +82,7 @@ class OrderSuccessScreen extends StatelessWidget {
                     shadowColor: AppColors.primary.withOpacity(0.3),
                   ),
                   onPressed: () {
+                    //Regresa a la primera pantalla del stack
                     Navigator.popUntil(
                       context,
                       (route) => route.isFirst,
@@ -96,13 +98,13 @@ class OrderSuccessScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               SizedBox(height: AppSpacing.l),
-              
-              // BOTÓN SECUNDARIO (OPCIONAL)
+
+              //Acción secundaria (futuro: pedidos)
               TextButton(
                 onPressed: () {
-                  // Podría navegar a pedidos en el futuro
+                  //Navegar a pedidos en el futuro
                 },
                 child: Text(
                   'Ver mis pedidos',
@@ -120,6 +122,7 @@ class OrderSuccessScreen extends StatelessWidget {
   }
 }
 
+//Animación personalizada de éxito
 class _EnhancedSuccessAnimation extends StatefulWidget {
   @override
   State<_EnhancedSuccessAnimation> createState() =>
@@ -137,11 +140,13 @@ class _EnhancedSuccessAnimationState extends State<_EnhancedSuccessAnimation>
   void initState() {
     super.initState();
 
+    //Controlador principal de la animación
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
 
+    //Escala inicial del icono
     _scaleAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
@@ -149,6 +154,7 @@ class _EnhancedSuccessAnimationState extends State<_EnhancedSuccessAnimation>
       ),
     );
 
+    //Efecto rebote
     _bounceAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.15), weight: 50),
       TweenSequenceItem(tween: Tween(begin: 1.15, end: 1.0), weight: 50),
@@ -159,6 +165,7 @@ class _EnhancedSuccessAnimationState extends State<_EnhancedSuccessAnimation>
       ),
     );
 
+    //Pulso circular exterior
     _circlePulseAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 50),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 50),
@@ -186,18 +193,20 @@ class _EnhancedSuccessAnimationState extends State<_EnhancedSuccessAnimation>
         return Stack(
           alignment: Alignment.center,
           children: [
-            // CÍRCULO DE PULSO
+            //Círculo de pulso
             if (_circlePulseAnimation.value > 0)
               Container(
                 height: 160 * _circlePulseAnimation.value,
                 width: 160 * _circlePulseAnimation.value,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withOpacity(0.1 * _circlePulseAnimation.value),
+                  color: AppColors.primary.withOpacity(
+                    0.1 * _circlePulseAnimation.value,
+                  ),
                 ),
               ),
-            
-            // ICONO PRINCIPAL
+
+            //Icono principal con gradiente
             Transform.scale(
               scale: _scaleAnimation.value * _bounceAnimation.value,
               child: Container(

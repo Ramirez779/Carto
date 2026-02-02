@@ -6,6 +6,7 @@ import '../checkout/checkout_screen.dart';
 import '../../ui/design_tokens.dart';
 import '../../models/cart_item.dart';
 
+//Pantalla principal del carrito de compras
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
@@ -19,6 +20,7 @@ class CartScreen extends StatelessWidget {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
+            //Encabezado con botón de retroceso y título
             SliverPadding(
               padding: EdgeInsets.fromLTRB(
                   AppSpacing.l, AppSpacing.xl, AppSpacing.l, 0),
@@ -44,6 +46,7 @@ class CartScreen extends StatelessWidget {
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 20)),
+            //Contenido condicional: vacío o con productos
             cart.items.isEmpty
                 ? const SliverFillRemaining(
                     hasScrollBody: false,
@@ -82,6 +85,7 @@ class CartScreen extends StatelessWidget {
           ],
         ),
       ),
+      //Barra inferior con resumen y botón de pago (solo si hay productos)
       bottomNavigationBar: cart.items.isEmpty
           ? null
           : SafeArea(
@@ -105,6 +109,7 @@ class CartScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      //Fila de subtotal
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -126,6 +131,7 @@ class CartScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
+                      //Fila de costo de envío
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -147,6 +153,7 @@ class CartScreen extends StatelessWidget {
                         ],
                       ),
                       const Divider(height: 24, thickness: 1),
+                      //Fila de total general
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -169,6 +176,7 @@ class CartScreen extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: AppSpacing.m),
+                      //Botón para proceder al pago
                       SizedBox(
                         width: double.infinity,
                         height: 52,
@@ -190,8 +198,8 @@ class CartScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.arrow_forward_rounded,
-                              size: 20),
+                          icon:
+                              const Icon(Icons.arrow_forward_rounded, size: 20),
                           label: Text(
                             'Proceder al pago',
                             style: GoogleFonts.inter(
@@ -209,6 +217,7 @@ class CartScreen extends StatelessWidget {
     );
   }
 
+  //Construye un widget para cada item del carrito
   Widget _buildCartItem(CartItem item, CartProvider cart, {required Key key}) {
     return Container(
       key: key,
@@ -226,7 +235,7 @@ class CartScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // IMAGEN DEL PRODUCTO CON BADGE
+          //Contenedor de imagen del producto con badge de cantidad
           Stack(
             children: [
               Container(
@@ -250,6 +259,7 @@ class CartScreen extends StatelessWidget {
                       )
                     : null,
               ),
+              //Badge que muestra cantidad si es mayor a 1
               if (item.quantity > 1)
                 Positioned(
                   top: -6,
@@ -281,6 +291,7 @@ class CartScreen extends StatelessWidget {
             ],
           ),
           SizedBox(width: AppSpacing.m),
+          //Detalles del producto
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,6 +325,7 @@ class CartScreen extends StatelessWidget {
               ],
             ),
           ),
+          //Botón para eliminar producto
           _AnimatedDeleteButton(
             onPressed: () => cart.removeProduct(item.product),
           ),
@@ -323,6 +335,7 @@ class CartScreen extends StatelessWidget {
   }
 }
 
+//Botón animado para eliminar items del carrito
 class _AnimatedDeleteButton extends StatefulWidget {
   final VoidCallback onPressed;
 
@@ -361,6 +374,7 @@ class _AnimatedDeleteButtonState extends State<_AnimatedDeleteButton> {
   }
 }
 
+//Vista que se muestra cuando el carrito está vacío
 class _EmptyCartView extends StatelessWidget {
   const _EmptyCartView();
 
@@ -371,6 +385,7 @@ class _EmptyCartView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          //Icono de carrito vacío
           Container(
             height: 120,
             width: 120,
@@ -385,6 +400,7 @@ class _EmptyCartView extends StatelessWidget {
             ),
           ),
           SizedBox(height: AppSpacing.xl),
+          //Mensaje principal
           Text(
             'Tu carrito está vacío',
             style: GoogleFonts.inter(
@@ -394,6 +410,7 @@ class _EmptyCartView extends StatelessWidget {
             ),
           ),
           SizedBox(height: AppSpacing.s),
+          //Instrucciones
           Text(
             'Agrega productos desde la página de inicio para continuar',
             textAlign: TextAlign.center,
@@ -404,6 +421,7 @@ class _EmptyCartView extends StatelessWidget {
             ),
           ),
           SizedBox(height: AppSpacing.xl),
+          //Botón para ir al inicio
           SizedBox(
             width: double.infinity,
             height: 48,

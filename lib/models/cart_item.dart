@@ -1,7 +1,11 @@
 import 'product.dart';
 
+//Modelo que representa un producto dentro del carrito
 class CartItem {
+  //Producto asociado al item
   final Product product;
+
+  //Cantidad del producto
   int quantity;
 
   CartItem({
@@ -9,6 +13,7 @@ class CartItem {
     this.quantity = 1,
   });
 
+  //Convierte el objeto a JSON para almacenamiento
   Map<String, dynamic> toJson() {
     return {
       'product': product.toJson(),
@@ -16,6 +21,7 @@ class CartItem {
     };
   }
 
+  //Crea una instancia a partir de un JSON
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
       product: Product.fromJson(json['product']),

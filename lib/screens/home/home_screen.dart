@@ -6,6 +6,7 @@ import 'package:carto/screens/product/product_detail_screen.dart';
 import 'package:carto/widgets/home_sliver_app.dart';
 import 'package:carto/widgets/product_card.dart';
 
+//Pantalla principal de inicio
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -14,8 +15,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //Controla el estado de carga inicial
   bool _isLoading = true;
 
+  //Lista simulada de productos, posee id,titulo, precio y un link de la imagen. De momento harcodeados
   final List<Product> products = [
     Product(
       id: 'p1',
@@ -131,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    //Simula una carga inicial corta
     Timer(const Duration(milliseconds: 900), () {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -140,22 +144,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //Detecta el tema actual
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      //Fondo según el tema
       backgroundColor:
           isDark ? const Color(0xff0F1115) : const Color(0xffF5F6FA),
+
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
+          //AppBar personalizada con Sliver
           const HomeSliverAppBar(),
+
+          //Banner promocional
           SliverPersistentHeader(
             pinned: false,
             delegate: _PromoBannerDelegate(isDark: isDark),
           ),
+
           const SliverToBoxAdapter(
             child: SizedBox(height: 32),
           ),
+
+          //Título de sección
           const SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -168,23 +181,29 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
           const SliverToBoxAdapter(
             child: SizedBox(height: 20),
           ),
+
+          //Grid de productos
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
+                  //Skeleton mientras carga
                   if (_isLoading) {
                     return const _SkeletonCard();
                   }
 
                   final product = products[index];
 
+                  //Tarjeta de producto
                   return ProductCard(
                     product: product,
                     onTap: () {
+                      //Navega al detalle del producto
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -204,6 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
           const SliverToBoxAdapter(
             child: SizedBox(height: 28),
           ),
@@ -213,6 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+//Delegate para el banner promocional
 class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
   final bool isDark;
 
@@ -230,6 +251,7 @@ class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
+    //Opacidad progresiva al hacer scroll
     final opacity = 1 - (shrinkOffset / maxExtent);
 
     return Opacity(
@@ -293,11 +315,14 @@ class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+  bool shouldRebuild(
+    covariant SliverPersistentHeaderDelegate oldDelegate,
+  ) {
     return true;
   }
 }
 
+//Tarjeta skeleton para estado de carga
 class _SkeletonCard extends StatelessWidget {
   const _SkeletonCard();
 
@@ -312,6 +337,7 @@ class _SkeletonCard extends StatelessWidget {
       ),
       child: Column(
         children: [
+          //Área simulada de imagen
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -322,6 +348,7 @@ class _SkeletonCard extends StatelessWidget {
               ),
             ),
           ),
+          //Texto simulado
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(

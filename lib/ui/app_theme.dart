@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+//Configuración centralizada de temas de la aplicación
 class AppTheme {
+  //Tema claro, el que usamos actualmente
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: const Color(0xffF5F6FA),
@@ -13,6 +15,7 @@ class AppTheme {
     ),
   );
 
+  //Tema oscuro, se usará proximamente
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: const Color(0xff0F1115),
