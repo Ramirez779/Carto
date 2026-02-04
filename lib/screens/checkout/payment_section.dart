@@ -2,31 +2,45 @@ import 'package:flutter/material.dart';
 import '../../ui/design_tokens.dart';
 import 'section_card.dart';
 
-//Sección del checkout que muestra el método de pago seleccionado
+// Sección del checkout que muestra el método de pago
 class PaymentSection extends StatelessWidget {
   const PaymentSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SectionCard(
-      //Título que aparece en la tarjeta
       title: 'Método de pago',
-
-      //Ícono principal de la sección
       icon: Icons.credit_card_outlined,
-
-      //Contenido interno de la sección
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //Ícono del tipo de pago
-          Icon(
-            Icons.credit_card,
-            color: AppColors.primary,
+          Row(
+            children: [
+              Icon(
+                Icons.credit_card,
+                color: AppColors.textPrimary, // Icono en color neutro
+                size: 22,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Tarjeta de crédito',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-
-          //Texto descriptivo del método de pago
-          const Text('Tarjeta de crédito'),
+          const SizedBox(height: 8),
+          // Detalles de la tarjeta
+          Text(
+            '**** **** **** 1234',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );

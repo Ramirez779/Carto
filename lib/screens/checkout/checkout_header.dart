@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../ui/design_tokens.dart';
 
-//Encabezado de la pantalla de checkout
+// Encabezado de la pantalla de checkout
 class CheckoutHeader extends StatelessWidget {
   const CheckoutHeader({super.key});
 
@@ -10,37 +10,42 @@ class CheckoutHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //Fila con ícono y título
+        // Fila con ícono y título
         Row(
           children: [
-            //Contenedor circular con ícono
+            // Contenedor circular con ícono en color neutro
             Container(
-              width: 36,
-              height: 36,
+              width: 40, // Ligeramente más grande para mejor presencia
+              height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(18),
+                color: AppColors.surface, // Fondo neutro
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.black.withOpacity(0.08),
+                  width: 1,
+                ),
               ),
               child: Icon(
                 Icons.shopping_bag_outlined,
-                size: 18,
-                color: AppColors.primary,
+                size: 20,
+                color:
+                    AppColors.textPrimary, // Icono en color de texto primario
               ),
             ),
-            const SizedBox(width: 12),
-            //Título principal
+            const SizedBox(width: 16), // Espaciado aumentado
+            // Título principal
             Text(
               'Finaliza tu compra',
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
+                fontSize: 22, // Tamaño aumentado para jerarquía
+                fontWeight: FontWeight.w800, // Peso aumentado
                 color: AppColors.textPrimary,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        //Subtítulo descriptivo
+        const SizedBox(height: 12),
+        // Subtítulo descriptivo
         Text(
           'Revisa y confirma los detalles de tu pedido',
           style: TextStyle(

@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../ui/design_tokens.dart';
 
-//Tarjeta reutilizable para secciones del checkout (dirección, pago, resumen)
+// Tarjeta reutilizable para secciones del checkout
 class SectionCard extends StatelessWidget {
-  //Título que se muestra en la cabecera de la sección
   final String title;
-
-  //Ícono que acompaña al título
   final IconData icon;
-
-  //Contenido interno de la sección
   final Widget child;
 
   const SectionCard({
@@ -22,43 +17,47 @@ class SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      //Espaciado interno de la tarjeta
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        //Color de fondo según el tema de la app
         color: AppColors.surface,
-        //Bordes redondeados
         borderRadius: BorderRadius.circular(AppRadius.l),
-        //Borde sutil para separar la sección visualmente
         border: Border.all(
-          color: Colors.black.withOpacity(0.05),
+          color: Colors.black.withOpacity(0.08), // Borde más sutil
           width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //Cabecera de la sección (icono + título)
+          // Cabecera de la sección
           Row(
             children: [
               Icon(
                 icon,
                 size: 20,
-                color: AppColors.primary,
+                color: AppColors.textPrimary, // Icono en color de texto
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Text(
                 title,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
+                  letterSpacing: -0.3, // Espaciado de letras mejorado
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          //Contenido personalizado de la sección
+          // Contenido personalizado
           child,
         ],
       ),

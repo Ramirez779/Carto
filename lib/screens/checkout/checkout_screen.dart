@@ -22,7 +22,6 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   bool _isLoading = false;
 
-  //Confirma el pedido, lo guarda y navega a la pantalla de éxito
   Future<void> _confirmOrder() async {
     if (_isLoading) return;
 
@@ -32,18 +31,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       final cart = context.read<CartProvider>();
       final orders = context.read<OrderProvider>();
 
-      //Guarda el pedido
       orders.addOrder(cart.items, cart.total);
-
-      //Limpia el carrito
       cart.clear();
 
-      //Pequeño delay para feedback visual
       await Future.delayed(const Duration(milliseconds: 400));
 
       if (!mounted) return;
 
-      //Navega a la pantalla de éxito
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -75,26 +69,33 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      // AppBar simplificado sin título, solo botón de retroceso
       appBar: AppBar(
-        title: const Text('Checkout'),
-        centerTitle: true,
+        title: const SizedBox.shrink(), // Título vacío
+        centerTitle: false,
         elevation: 0,
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
+        automaticallyImplyLeading:
+            true, // Muestra automáticamente el botón de retroceso
       ),
       body: SafeArea(
         child: Column(
           children: [
-            //CONTENIDO PRINCIPAL
+            // CONTENIDO PRINCIPAL
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(AppSpacing.l),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     CheckoutHeader(),
-                    SizedBox(height: 32),
+                    SizedBox(
+                        height: 28), // Espaciado aumentado para mejor jerarquía
                     AddressSection(),
                     SizedBox(height: 16),
                     PaymentSection(),
@@ -105,13 +106,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
             ),
 
-            //BOTÓN INFERIOR
+            // BOTÓN INFERIOR
             Padding(
               padding: EdgeInsets.fromLTRB(
-                AppSpacing.l,
-                AppSpacing.m,
-                AppSpacing.l,
-                AppSpacing.m + bottomInset,
+                20,
+                16,
+                20,
+                16 + bottomInset,
               ),
               child: ConfirmButton(
                 isLoading: _isLoading,
