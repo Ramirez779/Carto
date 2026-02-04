@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../ui/design_tokens.dart';
 
-//Pantalla de perfil del usuario
+// Pantalla de perfil del usuario
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -14,10 +14,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  //Selector de imágenes desde galería
+  // Selector de imágenes desde galería
   final ImagePicker _picker = ImagePicker();
 
-  //Abre la galería y guarda el avatar seleccionado
+  // Abre la galería y guarda el avatar seleccionado
   Future<void> _pickImage() async {
     try {
       final XFile? image = await _picker.pickImage(
@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //Obtiene los datos del perfil desde el provider
+    // Obtiene los datos del perfil desde el provider
     final profile = context.watch<ProfileProvider>();
 
     return Scaffold(
@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            //Encabezado del perfil
+            // Encabezado del perfil
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
               sliver: SliverToBoxAdapter(
@@ -60,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
-            // ==========SECCIÓN CUENTA==========
+            // ========== SECCIÓN CUENTA ==========
             const SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
@@ -70,23 +70,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-            //Opciones de cuenta
+            // Opciones de cuenta
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    //pedidos
+                    // Pedidos
                     _ProfileTile(
                       icon: Icons.receipt_long_outlined,
                       title: 'Mis pedidos',
                       onTap: () {},
-                    ), //favoritos
+                    ),
+                    // Favoritos
                     _ProfileTile(
                       icon: Icons.favorite_outline,
                       title: 'Favoritos',
                       onTap: () {},
-                    ), //configuración
+                    ),
+                    // Configuración
                     _ProfileTile(
                       icon: Icons.settings_outlined,
                       title: 'Configuración',
@@ -99,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-            // ==========SECCIÓN SESIÓN===========
+            // ========== SECCIÓN SESIÓN ===========
             const SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
@@ -130,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-//Encabezado del perfil con avatar y datos básicos
+// Encabezado del perfil con avatar y datos básicos
 class _ProfileHeader extends StatelessWidget {
   final File? avatar;
   final String name;
@@ -158,7 +160,7 @@ class _ProfileHeader extends StatelessWidget {
       ),
       child: Column(
         children: [
-          //Avatar editable
+          // Avatar editable
           GestureDetector(
             onTap: onTapAvatar,
             child: Stack(
@@ -176,11 +178,11 @@ class _ProfileHeader extends StatelessWidget {
                         )
                       : null,
                 ),
-                //Icono de cámara
+                // Icono de cámara
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: Colors.black,
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
                   ),
@@ -194,7 +196,7 @@ class _ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          //Nombre del usuario
+          // Nombre del usuario
           Text(
             name,
             style: TextStyle(
@@ -204,7 +206,7 @@ class _ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          //Correo del usuario
+          // Correo del usuario
           Text(
             email,
             style: TextStyle(
@@ -218,7 +220,7 @@ class _ProfileHeader extends StatelessWidget {
   }
 }
 
-//Título reutilizable para secciones
+// Título reutilizable para secciones
 class _SectionTitle extends StatelessWidget {
   final String title;
 
@@ -241,7 +243,7 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-//Tile interactivo del menú de perfil
+// Tile interactivo del menú de perfil
 class _ProfileTile extends StatefulWidget {
   final IconData icon;
   final String title;
@@ -260,7 +262,7 @@ class _ProfileTile extends StatefulWidget {
 }
 
 class _ProfileTileState extends State<_ProfileTile> {
-  //Controla el efecto visual al presionar
+  // Controla el efecto visual al presionar
   bool _isPressed = false;
 
   @override
@@ -275,7 +277,7 @@ class _ProfileTileState extends State<_ProfileTile> {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          //Cambia color al presionar
+          // Cambia color al presionar
           color: _isPressed ? AppColors.background : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.m),
           border: Border.all(
@@ -285,24 +287,24 @@ class _ProfileTileState extends State<_ProfileTile> {
         ),
         child: Row(
           children: [
-            //Icono principal
+            // Icono principal
             Container(
               height: 40,
               width: 40,
               decoration: BoxDecoration(
                 color: widget.isLogout
                     ? AppColors.danger.withOpacity(0.1)
-                    : AppColors.primary.withOpacity(0.1),
+                    : Colors.black.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(AppRadius.s),
               ),
               child: Icon(
                 widget.icon,
                 size: 20,
-                color: widget.isLogout ? AppColors.danger : AppColors.primary,
+                color: widget.isLogout ? AppColors.danger : Colors.black,
               ),
             ),
             const SizedBox(width: 14),
-            //Texto de la opción
+            // Texto de la opción
             Expanded(
               child: Text(
                 widget.title,
@@ -315,11 +317,11 @@ class _ProfileTileState extends State<_ProfileTile> {
                 ),
               ),
             ),
-            //Indicador de navegación
+            // Indicador de navegación
             Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
-              color: AppColors.textSecondary.withOpacity(0.5),
+              color: Colors.black.withOpacity(0.5), //lo dejaremos en negro
             ),
           ],
         ),
