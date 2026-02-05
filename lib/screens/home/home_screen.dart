@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:carto/models/product.dart';
+import 'package:carto/providers/product_provider.dart';
 import 'package:carto/screens/product/product_detail_screen.dart';
 import 'package:carto/widgets/home_sliver_app.dart';
 import 'package:carto/widgets/product_card.dart';
 
-//Pantalla principal de inicio
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -15,225 +16,311 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //Controla el estado de carga inicial
-  bool _isLoading = true;
-
-  //Lista simulada de productos, posee id,titulo, precio y un link de la imagen. De momento harcodeados
-  final List<Product> products = [
-    Product(
-      id: 'p1',
-      title: 'Auriculares',
-      price: 29.99,
-      image:
-          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
-    ),
-    Product(
-      id: 'p2',
-      title: 'Smart Watch',
-      price: 59.99,
-      image:
-          'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
-    ),
-    Product(
-      id: 'p3',
-      title: 'Teclado',
-      price: 89.99,
-      image:
-          'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400',
-    ),
-    Product(
-      id: 'p4',
-      title: 'Mouse Gamer',
-      price: 19.99,
-      image:
-          'https://images.unsplash.com/photo-1527814050087-3793815479db?w=400',
-    ),
-    Product(
-      id: 'p5',
-      title: 'Auriculares Pro',
-      price: 89.99,
-      image:
-          'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400',
-    ),
-    Product(
-      id: 'p6',
-      title: 'Smart Watch Elite',
-      price: 199.99,
-      image:
-          'https://images.unsplash.com/photo-1434493650001-5d43a6fea0c8?w=400',
-    ),
-    Product(
-      id: 'p7',
-      title: 'Teclado Mecánico',
-      price: 129.99,
-      image:
-          'https://images.unsplash.com/photo-1629654291660-3c98113a0438?w=400',
-    ),
-    Product(
-      id: 'p8',
-      title: 'Mouse RGB',
-      price: 59.99,
-      image:
-          'https://images.unsplash.com/photo-1615663248957-c5b8d96c24a9?w=400',
-    ),
-    Product(
-      id: 'p9',
-      title: 'Monitor 4K',
-      price: 349.99,
-      image:
-          'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400',
-    ),
-    Product(
-      id: 'p10',
-      title: 'Laptop',
-      price: 899.99,
-      image:
-          'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
-    ),
-    Product(
-      id: 'p11',
-      title: 'Cámara',
-      price: 699.99,
-      image:
-          'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=400',
-    ),
-    Product(
-      id: 'p12',
-      title: 'Altavoz',
-      price: 79.99,
-      image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400',
-    ),
-    Product(
-      id: 'p13',
-      title: 'Tablet',
-      price: 299.99,
-      image: 'https://images.unsplash.com/photo-1546054451-aa6a150c5c3d?w=400',
-    ),
-    Product(
-      id: 'p14',
-      title: 'Mochila',
-      price: 49.99,
-      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400',
-    ),
-    Product(
-      id: 'p15',
-      title: 'Lámpara',
-      price: 34.99,
-      image:
-          'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400',
-    ),
-    Product(
-      id: 'p16',
-      title: 'Cafetera',
-      price: 89.99,
-      image:
-          'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400',
-    ),
-  ];
+  bool _initialLoading = true;
+  late Timer _autoRefreshTimer;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  int _lastProductCount = 0;
+  bool _showNewProductsBadge = false;
 
   @override
   void initState() {
     super.initState();
-    //Simula una carga inicial corta
+    
+    // Cargar productos iniciales
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadInitialProducts();
+    });
+    
+    // Timer para carga inicial visual
     Timer(const Duration(milliseconds: 900), () {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() => _initialLoading = false);
+      }
+    });
+    
+    // Auto-refresh cada 5 minutos
+    _startAutoRefreshTimer();
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer.cancel();
+    super.dispose();
+  }
+
+  void _startAutoRefreshTimer() {
+    _autoRefreshTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
+      if (mounted) {
+        _performAutoRefresh();
       }
     });
   }
 
+  Future<void> _loadInitialProducts() async {
+    try {
+      await context.read<ProductProvider>().loadProducts();
+      _lastProductCount = context.read<ProductProvider>().products.length;
+    } catch (e) {
+      // Ignorar error en carga inicial
+    }
+  }
+
+  Future<void> _performAutoRefresh() async {
+    final provider = context.read<ProductProvider>();
+    final previousCount = provider.products.length;
+    
+    try {
+      final hadChanges = await provider.silentRefresh();
+      
+      // Mostrar badge si hubo cambios
+      if (hadChanges && mounted) {
+        setState(() {
+          _showNewProductsBadge = true;
+        });
+        
+        // Ocultar badge después de 3 segundos
+        Timer(const Duration(seconds: 3), () {
+          if (mounted) {
+            setState(() {
+              _showNewProductsBadge = false;
+            });
+          }
+        });
+        
+        _lastProductCount = provider.products.length;
+      }
+    } catch (e) {
+      // Silenciar errores en auto-refresh
+    }
+  }
+
+  Future<void> _handleRefresh() async {
+    final provider = context.read<ProductProvider>();
+    final previousCount = provider.products.length;
+    
+    await provider.refreshProducts();
+    final newCount = provider.products.length;
+    
+    // Actualizar contador para badge
+    _lastProductCount = newCount;
+    
+    // Mostrar snackbar sutil si hay nuevos productos
+    if (newCount > previousCount && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${newCount - previousCount} nuevos productos'),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  void _resetBadge() {
+    if (_showNewProductsBadge && mounted) {
+      setState(() {
+        _showNewProductsBadge = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    //Detecta el tema actual
+    final productProvider = context.watch<ProductProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final showSkeleton = _initialLoading || productProvider.isLoading;
+
     return Scaffold(
-      //Fondo según el tema
-      backgroundColor:
-          isDark ? const Color(0xff0F1115) : const Color(0xffF5F6FA),
+      backgroundColor: isDark ? const Color(0xff0F1115) : const Color(0xffF5F6FA),
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _handleRefresh,
+        color: const Color(0xff4F6EF7),
+        backgroundColor: isDark ? const Color(0xff2A2D36) : Colors.white,
+        displacement: 40,
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            // Ocultar badge cuando el usuario hace scroll
+            if (notification is ScrollUpdateNotification) {
+              _resetBadge();
+            }
+            return false;
+          },
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            slivers: [
+              // AppBar original sin cambios
+              const HomeSliverAppBar(),
 
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          //AppBar personalizada con Sliver
-          const HomeSliverAppBar(),
+              // Banner promocional original
+              SliverPersistentHeader(
+                pinned: false,
+                delegate: _PromoBannerDelegate(isDark: isDark),
+              ),
 
-          //Banner promocional
-          SliverPersistentHeader(
-            pinned: false,
-            delegate: _PromoBannerDelegate(isDark: isDark),
-          ),
+              const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 32),
-          ),
-
-          //Título de sección
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Productos',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+              // Título simple "Productos"
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Productos',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
+              // Badge de nuevos productos (solo cuando hay)
+              if (_showNewProductsBadge)
+                SliverToBoxAdapter(
+                  child: GestureDetector(
+                    onTap: _resetBadge,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.green.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.new_releases, size: 16, color: Colors.green),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Nuevos productos disponibles',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.green[700],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
 
-          //Grid de productos
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  //Skeleton mientras carga
-                  if (_isLoading) {
-                    return const _SkeletonCard();
-                  }
+              // Error message solo si hay error
+              if (productProvider.hasError)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange[50],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.orange),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.orange),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Error: ${productProvider.error}',
+                              style: const TextStyle(color: Colors.orange),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
 
-                  final product = products[index];
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-                  //Tarjeta de producto
-                  return ProductCard(
-                    product: product,
-                    onTap: () {
-                      //Navega al detalle del producto
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProductDetailScreen(product: product),
-                        ),
+              // Grid de productos (sin contador, sin extras)
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      if (showSkeleton) {
+                        return const _SkeletonCard();
+                      }
+
+                      if (productProvider.products.isEmpty) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xff1C1F26) : Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'No hay productos',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        );
+                      }
+
+                      final product = productProvider.products[index];
+                      return ProductCard(
+                        product: product,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ProductDetailScreen(product: product),
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-                childCount: _isLoading ? 4 : products.length,
+                    childCount: showSkeleton 
+                      ? 4 
+                      : productProvider.products.isEmpty 
+                        ? 1 
+                        : productProvider.products.length,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.90,
+                  ),
+                ),
               ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 0.90,
-              ),
-            ),
-          ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
+              // Empty state minimalista
+              if (!showSkeleton && productProvider.products.isEmpty)
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Icon(Icons.inventory_outlined, size: 64, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text(
+                          'No hay productos disponibles',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 28)),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-//Delegate para el banner promocional
+// Delegate para el banner promocional (original)
 class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
   final bool isDark;
 
@@ -251,7 +338,7 @@ class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    //Opacidad progresiva al hacer scroll
+    // Opacidad progresiva al hacer scroll
     final opacity = 1 - (shrinkOffset / maxExtent);
 
     return Opacity(
@@ -322,7 +409,7 @@ class _PromoBannerDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-//Tarjeta skeleton para estado de carga
+// Tarjeta skeleton para estado de carga (original)
 class _SkeletonCard extends StatelessWidget {
   const _SkeletonCard();
 
@@ -337,7 +424,7 @@ class _SkeletonCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          //Área simulada de imagen
+          // Área simulada de imagen
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -348,7 +435,7 @@ class _SkeletonCard extends StatelessWidget {
               ),
             ),
           ),
-          //Texto simulado
+          // Texto simulado
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(

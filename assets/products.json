@@ -1,0 +1,302 @@
+[
+    {
+        "id": "p1",
+        "title": "Auriculares",
+        "price": 29.99,
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
+        "description": "Auriculares inalámbricos con cancelación de ruido activa y 30 horas de batería",
+        "category": "Audio",
+        "stock": 15,
+        "rating": 4.5
+    },
+    {
+        "id": "p2",
+        "title": "Smart Watch",
+        "price": 59.99,
+        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400",
+        "description": "Reloj inteligente con monitor de ritmo cardíaco y GPS integrado",
+        "category": "Wearables",
+        "stock": 8,
+        "rating": 4.2
+    },
+    {
+        "id": "p3",
+        "title": "Teclado",
+        "price": 89.99,
+        "image": "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400",
+        "description": "Teclado mecánico gaming con retroiluminación RGB",
+        "category": "Computación",
+        "stock": 12,
+        "rating": 4.7
+    },
+    {
+        "id": "p4",
+        "title": "Mouse Gamer",
+        "price": 19.99,
+        "image": "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400",
+        "description": "Mouse gaming con 6 botones programables",
+        "category": "Computación",
+        "stock": 20,
+        "rating": 4.0
+    },
+    {
+        "id": "p5",
+        "title": "Auriculares Pro",
+        "price": 89.99,
+        "image": "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400",
+        "description": "Auriculares profesionales para estudio",
+        "category": "Audio",
+        "stock": 6,
+        "rating": 4.8
+    },
+    {
+        "id": "p6",
+        "title": "Smart Watch Elite",
+        "price": 199.99,
+        "image": "https://images.unsplash.com/photo-1434493650001-5d43a6fea0c8?w=400",
+        "description": "Reloj inteligente premium con ECG y oxímetro",
+        "category": "Wearables",
+        "stock": 4,
+        "rating": 4.9
+    },
+    {
+        "id": "p7",
+        "title": "Parlante Bluetooth",
+        "price": 39.99,
+        "image": "https://images.unsplash.com/photo-1585386959984-a4155228c59b?w=400",
+        "description": "Parlante portátil con sonido estéreo y resistencia al agua IPX7",
+        "category": "Audio",
+        "stock": 18,
+        "rating": 4.3
+    },
+    {
+        "id": "p8",
+        "title": "Laptop Stand",
+        "price": 24.99,
+        "image": "https://images.unsplash.com/photo-1587614382346-ac8c2c5f8d79?w=400",
+        "description": "Soporte ajustable de aluminio para laptops hasta 17 pulgadas",
+        "category": "Computación",
+        "stock": 25,
+        "rating": 4.4
+    },
+    {
+        "id": "p9",
+        "title": "Cámara Web HD",
+        "price": 49.99,
+        "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
+        "description": "Cámara web Full HD con micrófono integrado",
+        "category": "Computación",
+        "stock": 10,
+        "rating": 4.1
+    },
+    {
+        "id": "p10",
+        "title": "Power Bank",
+        "price": 34.99,
+        "image": "https://images.unsplash.com/photo-1609592424359-01d39c6f4e6b?w=400",
+        "description": "Batería portátil de 20,000 mAh con carga rápida",
+        "category": "Accesorios",
+        "stock": 30,
+        "rating": 4.6
+    },
+    {
+        "id": "p11",
+        "title": "Audífonos In-Ear",
+        "price": 14.99,
+        "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400",
+        "description": "Audífonos in-ear con micrófono y cancelación pasiva de ruido",
+        "category": "Audio",
+        "stock": 40,
+        "rating": 4.0
+    },
+    {
+        "id": "p12",
+        "title": "Tablet 10\"",
+        "price": 149.99,
+        "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=400",
+        "description": "Tablet de 10 pulgadas ideal para estudio y entretenimiento",
+        "category": "Computación",
+        "stock": 7,
+        "rating": 4.2
+    },
+    {
+        "id": "p13",
+        "title": "Teclado Inalámbrico",
+        "price": 29.99,
+        "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",
+        "description": "Teclado inalámbrico compacto y silencioso",
+        "category": "Computación",
+        "stock": 22,
+        "rating": 4.3
+    },
+    {
+        "id": "p14",
+        "title": "Lámpara LED Inteligente",
+        "price": 22.99,
+        "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400",
+        "description": "Lámpara LED RGB controlada desde el móvil",
+        "category": "Hogar",
+        "stock": 16,
+        "rating": 4.5
+    },
+    {
+        "id": "p15",
+        "title": "Monitor 24\"",
+        "price": 179.99,
+        "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
+        "description": "Monitor Full HD de 24 pulgadas con panel IPS",
+        "category": "Computación",
+        "stock": 9,
+        "rating": 4.6
+    },
+    {
+        "id": "p16",
+        "title": "Router WiFi",
+        "price": 69.99,
+        "image": "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?w=400",
+        "description": "Router WiFi de doble banda con alta cobertura",
+        "category": "Redes",
+        "stock": 14,
+        "rating": 4.4
+    },
+    {
+        "id": "p17",
+        "title": "Disco SSD 1TB",
+        "price": 99.99,
+        "image": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400",
+        "description": "Unidad SSD de 1TB para alto rendimiento",
+        "category": "Almacenamiento",
+        "stock": 11,
+        "rating": 4.8
+    },
+    {
+        "id": "p18",
+        "title": "Cargador Rápido USB-C",
+        "price": 18.99,
+        "image": "https://images.unsplash.com/photo-1580910051074-7c9f8c2f4c57?w=400",
+        "description": "Cargador rápido USB-C de 30W",
+        "category": "Accesorios",
+        "stock": 35,
+        "rating": 4.3
+    },
+    {
+        "id": "p19",
+        "title": "Mouse Inalámbrico",
+        "price": 16.99,
+        "image": "https://images.unsplash.com/photo-1586816001966-79b736744398?w=400",
+        "description": "Mouse inalámbrico ergonómico y silencioso",
+        "category": "Computación",
+        "stock": 28,
+        "rating": 4.2
+    },
+    {
+        "id": "p20",
+        "title": "Smart TV 43\"",
+        "price": 329.99,
+        "image": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400",
+        "description": "Televisor inteligente 4K con apps integradas",
+        "category": "Entretenimiento",
+        "stock": 5,
+        "rating": 4.7
+    },
+    {
+        "id": "p21",
+        "title": "Barra de Sonido",
+        "price": 89.99,
+        "image": "https://images.unsplash.com/photo-1612197527762-6b46e7e04c1e?w=400",
+        "description": "Barra de sonido con bajos mejorados",
+        "category": "Audio",
+        "stock": 13,
+        "rating": 4.5
+    },
+    {
+        "id": "p22",
+        "title": "Cámara de Seguridad",
+        "price": 54.99,
+        "image": "https://images.unsplash.com/photo-1581092919535-7146cba6d13c?w=400",
+        "description": "Cámara WiFi con visión nocturna",
+        "category": "Hogar",
+        "stock": 17,
+        "rating": 4.4
+    },
+    {
+        "id": "p23",
+        "title": "Teclado Numérico",
+        "price": 12.99,
+        "image": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
+        "description": "Teclado numérico USB compacto",
+        "category": "Computación",
+        "stock": 40,
+        "rating": 4.1
+    },
+    {
+        "id": "p24",
+        "title": "Hub USB-C",
+        "price": 27.99,
+        "image": "https://images.unsplash.com/photo-1587614382346-ac8c2c5f8d79?w=400",
+        "description": "Hub USB-C con HDMI y puertos USB",
+        "category": "Accesorios",
+        "stock": 21,
+        "rating": 4.6
+    },
+    {
+        "id": "p25",
+        "title": "Smart Band",
+        "price": 39.99,
+        "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400",
+        "description": "Pulsera inteligente con monitor de actividad",
+        "category": "Wearables",
+        "stock": 19,
+        "rating": 4.3
+    },
+    {
+        "id": "p26",
+        "title": "Soporte para Celular",
+        "price": 9.99,
+        "image": "https://images.unsplash.com/photo-1580910051074-7c9f8c2f4c57?w=400",
+        "description": "Soporte ajustable para escritorio",
+        "category": "Accesorios",
+        "stock": 50,
+        "rating": 4.0
+    },
+    {
+        "id": "p27",
+        "title": "Impresora Multifunción",
+        "price": 129.99,
+        "image": "https://images.unsplash.com/photo-1581090700227-1e37b190418e?w=400",
+        "description": "Impresora con escáner y WiFi",
+        "category": "Computación",
+        "stock": 6,
+        "rating": 4.5
+    },
+    {
+        "id": "p28",
+        "title": "Control Gamer",
+        "price": 44.99,
+        "image": "https://images.unsplash.com/photo-1606813902917-8f7fcb07f9db?w=400",
+        "description": "Control inalámbrico compatible con PC y móvil",
+        "category": "Gaming",
+        "stock": 15,
+        "rating": 4.6
+    },
+    {
+        "id": "p29",
+        "title": "Micrófono USB",
+        "price": 59.99,
+        "image": "https://images.unsplash.com/photo-1590608897129-79da98d159ab?w=400",
+        "description": "Micrófono USB ideal para streaming y podcast",
+        "category": "Audio",
+        "stock": 10,
+        "rating": 4.7
+    },
+    {
+        "id": "p30",
+        "title": "Base de Carga Inalámbrica",
+        "price": 21.99,
+        "image": "https://images.unsplash.com/photo-1580910051074-7c9f8c2f4c57?w=400",
+        "description": "Cargador inalámbrico rápido para smartphones",
+        "category": "Accesorios",
+        "stock": 26,
+        "rating": 4.4
+    }
+]

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
+import 'package:carto/models/cart_item.dart';
 
 //Provider encargado del estado del carrito de compras
 class CartProvider extends ChangeNotifier {
