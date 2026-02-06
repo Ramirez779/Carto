@@ -125,3 +125,8 @@ El APK de **release** fue analizado con **MobSF (Mobile Security Framework)** co
 ## Download
 
 You can download the latest APK from the **Releases** section.
+
+## License
+
+This project is licensed under the MIT License.
+See the [LICENSE](LICENSE) file for details.
