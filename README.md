@@ -130,3 +130,6 @@ You can download the latest APK from the **Releases** section.
 
 This project is licensed under the MIT License.
 See the [LICENSE](LICENSE) file for details.
+
+Este proyecto está en constante evolución.
+Siempre agradecemos tus comentarios, incidencias y ⭐.
