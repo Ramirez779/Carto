@@ -3,7 +3,12 @@ import '../main_shell.dart';
 import 'login_screen.dart';
 import '/widgets/auth_card.dart';
 
-//Pantalla de registro de nuevos usuarios
+/// Pantalla de registro de nuevos usuarios mejorada
+/// Implementa principios heurísticos de UX/UI:
+/// - Jerarquía visual y espaciado proporcional
+/// - Ley de Fitts (tamaños de toque adecuados)
+/// - Affordance y feedback visual mejorado
+/// - Reducción de carga cognitiva
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -17,24 +22,24 @@ class _RegisterScreenState extends State<RegisterScreen>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _obscure = true; //Controla visibilidad de contraseña
-  bool _loading = false; //Estado de carga del botón
-  bool _showNameError = false; //Error de nombre
-  bool _showEmailError = false; //Error de email
-  bool _showPasswordError = false; //Error de contraseña
+  bool _obscure = true;
+  bool _loading = false;
+  bool _showNameError = false;
+  bool _showEmailError = false;
+  bool _showPasswordError = false;
 
-  late AnimationController _controller; //Controlador de animaciones
-  late Animation<double> _fade; //Animación de opacidad
-  late Animation<Offset> _slide; //Animación de deslizamiento
+  late AnimationController _controller;
+  late Animation<double> _fade;
+  late Animation<Offset> _slide;
 
   @override
   void initState() {
     super.initState();
 
-    //Configuración de animaciones de entrada
+    // Animación de entrada suave (Principio de entrada/salida)
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 450),
+      duration: const Duration(milliseconds: 500),
     );
 
     _fade = CurvedAnimation(
@@ -43,15 +48,14 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
 
     _slide = Tween<Offset>(
-      begin: const Offset(0, 0.04),
+      begin: const Offset(0, 0.03),
       end: Offset.zero,
     ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
     );
 
     _controller.forward();
 
-    //Validación en tiempo real de campos
     _nameController.addListener(_validateName);
     _emailController.addListener(_validateEmail);
     _passwordController.addListener(_validatePassword);
@@ -67,25 +71,30 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   //============ VALIDACIÓN ============
+
   bool get _isFormValid {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final pass = _passwordController.text.trim();
     final emailValid = _isValidEmail(email);
-    return name.isNotEmpty && email.isNotEmpty && pass.isNotEmpty && emailValid;
+    final nameValid = name.length >= 2;
+    return nameValid && emailValid && pass.length >= 6;
   }
 
-  //Valida formato básico de email
+  // Validación mejorada con regex
   bool _isValidEmail(String email) {
-    return email.contains('@') && email.contains('.');
+    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
-  //Valida nombre en tiempo real
   void _validateName() {
-    setState(() => _showNameError = _nameController.text.isEmpty);
+    if (_nameController.text.isEmpty) {
+      setState(() => _showNameError = false);
+      return;
+    }
+    final isValid = _nameController.text.trim().length >= 2;
+    setState(() => _showNameError = !isValid);
   }
 
-  //Valida email en tiempo real
   void _validateEmail() {
     if (_emailController.text.isEmpty) {
       setState(() => _showEmailError = false);
@@ -95,7 +104,6 @@ class _RegisterScreenState extends State<RegisterScreen>
     setState(() => _showEmailError = !isValid);
   }
 
-  //Valida contraseña en tiempo real (mínimo 6 caracteres)
   void _validatePassword() {
     if (_passwordController.text.isEmpty) {
       setState(() => _showPasswordError = false);
@@ -105,17 +113,40 @@ class _RegisterScreenState extends State<RegisterScreen>
     setState(() => _showPasswordError = !isValid);
   }
 
-  //Simulación de registro de usuario
+  // Obtener nivel de seguridad de contraseña
+  String get _passwordStrength {
+    final pass = _passwordController.text;
+    if (pass.length < 6) return 'Débil';
+    if (pass.length < 8) return 'Media';
+    if (pass.length >= 8 && RegExp(r'[0-9]').hasMatch(pass)) return 'Fuerte';
+    return 'Media';
+  }
+
+  Color get _passwordStrengthColor {
+    switch (_passwordStrength) {
+      case 'Débil':
+        return Colors.red;
+      case 'Media':
+        return Colors.orange;
+      case 'Fuerte':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  //============ ACCIONES ============
+
   void _registerFake() async {
     if (!_isFormValid) return;
 
     setState(() => _loading = true);
 
+    // Simulación de umbral de Doherty (< 400ms percepción instantánea)
     await Future.delayed(const Duration(milliseconds: 700));
 
     if (!mounted) return;
 
-    //Navega a la pantalla principal limpiando el stack
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const MainShell()),
@@ -130,80 +161,178 @@ class _RegisterScreenState extends State<RegisterScreen>
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: FadeTransition(
               opacity: _fade,
               child: SlideTransition(
                 position: _slide,
-                child: AuthCard(
-                  title: 'Crear cuenta',
-                  children: [
-                    //Campo de nombre completo
-                    _input(
-                      controller: _nameController,
-                      hint: 'Nombre completo',
-                      icon: Icons.person_outline,
-                      showError: _showNameError,
-                    ),
-                    //Mensaje de error para nombre
-                    if (_showNameError && _nameController.text.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4, left: 16),
-                        child: Text(
-                          'El nombre es requerido',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.red[700],
-                          ),
+                child: Container(
+                  // Sombra sutil para efecto de profundidad
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 24,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(28),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Título con mejor jerarquía tipográfica
+                      const Text(
+                        'Crear cuenta',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xff1A1D2E),
+                          letterSpacing: -0.5,
                         ),
                       ),
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 8),
 
-                    //Campo de email
-                    _input(
-                      controller: _emailController,
-                      hint: 'Correo electrónico',
-                      icon: Icons.email_outlined,
-                      showError: _showEmailError,
-                    ),
-                    //Mensaje de error para email
-                    if (_showEmailError && _emailController.text.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4, left: 16),
-                        child: Text(
-                          'Ingresa un email válido',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.red[700],
-                          ),
+                      // Subtítulo descriptivo (mejora usabilidad)
+                      Text(
+                        'Completa tus datos para registrarte',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          height: 1.4,
                         ),
                       ),
-                    const SizedBox(height: 10),
 
-                    //Campo de contraseña
-                    _passwordInput(),
-                    //Mensaje de error para contraseña
-                    if (_showPasswordError &&
-                        _passwordController.text.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4, left: 16),
-                        child: Text(
-                          'Mínimo 6 caracteres',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.red[700],
+                      const SizedBox(height: 28),
+
+                      // Campo de nombre
+                      _input(
+                        controller: _nameController,
+                        hint: 'Nombre completo',
+                        icon: Icons.person_outline,
+                        showError: _showNameError,
+                      ),
+
+                      // Mensaje de error nombre
+                      if (_showNameError && _nameController.text.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6, left: 4),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline,
+                                  size: 14, color: Colors.red[700]),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Mínimo 2 caracteres',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.red[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+
+                      const SizedBox(height: 14),
+
+                      // Campo de email
+                      _input(
+                        controller: _emailController,
+                        hint: 'Correo electrónico',
+                        icon: Icons.email_outlined,
+                        showError: _showEmailError,
+                        keyboardType: TextInputType.emailAddress,
                       ),
-                    const SizedBox(height: 22),
 
-                    //Botón principal de registro
-                    _registerButton(),
-                    const SizedBox(height: 20),
+                      // Mensaje de error email
+                      if (_showEmailError && _emailController.text.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6, left: 4),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline,
+                                  size: 14, color: Colors.red[700]),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Ingresa un email válido',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.red[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-                    //Enlace a pantalla de login
-                    _footerLogin(),
-                  ],
+                      const SizedBox(height: 14),
+
+                      // Campo de contraseña
+                      _passwordInput(),
+
+                      // Mensaje de error contraseña
+                      if (_showPasswordError &&
+                          _passwordController.text.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6, left: 4),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline,
+                                  size: 14, color: Colors.red[700]),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Mínimo 6 caracteres',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.red[700],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                      // Indicador de fuerza de contraseña
+                      if (_passwordController.text.isNotEmpty &&
+                          !_showPasswordError &&
+                          _passwordController.text.length >= 6)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6, left: 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.shield_outlined,
+                                size: 14,
+                                color: _passwordStrengthColor,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Seguridad: $_passwordStrength',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: _passwordStrengthColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                      const SizedBox(height: 24),
+
+                      // Botón principal
+                      _registerButton(),
+
+                      const SizedBox(height: 24),
+
+                      // Footer login
+                      _footerLogin(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -213,89 +342,119 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  //Widget reutilizable para campos de texto
+  //============ WIDGETS ============
+
   Widget _input({
     required TextEditingController controller,
     required String hint,
     required IconData icon,
     bool showError = false,
+    TextInputType? keyboardType,
   }) {
     return TextField(
       controller: controller,
+      keyboardType: keyboardType,
+      style: const TextStyle(fontSize: 15),
       decoration: InputDecoration(
         hintText: hint,
-        prefixIcon: Icon(icon, size: 20),
+        hintStyle: TextStyle(
+          color: Colors.grey[400],
+          fontSize: 15,
+        ),
+        prefixIcon: Icon(
+          icon,
+          size: 20,
+          color: showError ? Colors.red[400] : Colors.grey[600],
+        ),
         filled: true,
         fillColor: showError
-            ? Colors.red[50]?.withOpacity(0.3)
+            ? Colors.red[50]?.withOpacity(0.4)
             : const Color(0xffF6F7FB),
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 14,
+          vertical: 16,
           horizontal: 16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
-        enabledBorder: showError
-            ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: Colors.red[300]!, width: 1),
-              )
-            : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide:
-                    const BorderSide(color: Color(0xffE2E6F0), width: 1),
-              ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: showError ? Colors.red[300]! : const Color(0xffE2E6F0),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: showError ? Colors.red[400]! : const Color(0xff4F6EF7),
+            width: 2,
+          ),
+        ),
       ),
     );
   }
 
-  //Campo de contraseña con ícono de visibilidad
   Widget _passwordInput() {
     return TextField(
       controller: _passwordController,
       obscureText: _obscure,
+      style: const TextStyle(fontSize: 15),
       decoration: InputDecoration(
         hintText: 'Contraseña',
-        prefixIcon: const Icon(Icons.lock_outline, size: 20),
+        hintStyle: TextStyle(
+          color: Colors.grey[400],
+          fontSize: 15,
+        ),
+        prefixIcon: Icon(
+          Icons.lock_outline,
+          size: 20,
+          color: _showPasswordError ? Colors.red[400] : Colors.grey[600],
+        ),
         suffixIcon: IconButton(
           icon: Icon(
             _obscure ? Icons.visibility_off : Icons.visibility,
-            size: 20,
+            size: 22, // Aumentado para mejor Ley de Fitts
             color: Colors.grey[600],
           ),
+          padding: const EdgeInsets.all(12), // Área táctil más grande
           onPressed: () {
             setState(() => _obscure = !_obscure);
           },
         ),
         filled: true,
         fillColor: _showPasswordError
-            ? Colors.red[50]?.withOpacity(0.3)
+            ? Colors.red[50]?.withOpacity(0.4)
             : const Color(0xffF6F7FB),
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 14,
+          vertical: 16,
           horizontal: 16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
-        enabledBorder: _showPasswordError
-            ? OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: Colors.red[300]!, width: 1),
-              )
-            : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide:
-                    const BorderSide(color: Color(0xffE2E6F0), width: 1),
-              ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color:
+                _showPasswordError ? Colors.red[300]! : const Color(0xffE2E6F0),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color:
+                _showPasswordError ? Colors.red[400]! : const Color(0xff4F6EF7),
+            width: 2,
+          ),
+        ),
       ),
     );
   }
 
-  //Botón principal de registro
   Widget _registerButton() {
     final isDisabled = !_isFormValid || _loading;
 
@@ -305,37 +464,39 @@ class _RegisterScreenState extends State<RegisterScreen>
       child: ElevatedButton(
         onPressed: isDisabled ? null : _registerFake,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff4F6EF7),
+          backgroundColor: isDisabled
+              ? const Color(0xffC5D0F7) // Mejor contraste
+              : const Color(0xff4F6EF7),
           foregroundColor: Colors.white,
+          disabledBackgroundColor: const Color(0xffC5D0F7),
+          disabledForegroundColor: Colors.white.withOpacity(0.7),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          elevation: isDisabled ? 0 : 1,
-          shadowColor: const Color(0xff4F6EF7).withOpacity(0.2),
+          elevation: isDisabled ? 0 : 2,
+          shadowColor: const Color(0xff4F6EF7).withOpacity(0.3),
         ),
         child: _loading
             ? const SizedBox(
                 width: 22,
                 height: 22,
                 child: CircularProgressIndicator(
-                  strokeWidth: 2,
+                  strokeWidth: 2.5,
                   color: Colors.white,
                 ),
               )
-            : Text(
+            : const Text(
                 'Crear cuenta',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color:
-                      isDisabled ? Colors.white.withOpacity(0.8) : Colors.white,
+                  letterSpacing: 0.3,
                 ),
               ),
       ),
     );
   }
 
-  //Pie de página con enlace a login
   Widget _footerLogin() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -358,6 +519,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           },
           style: TextButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            minimumSize: const Size(44, 44), // Ley de Fitts
           ),
           child: const Text(
             'Inicia sesión',

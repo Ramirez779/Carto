@@ -24,6 +24,8 @@ dependencies:
   sqflite: ^2.3.0
   path: ^1.8.3
 
+  dashed_border: ^1.0.2
+
   # Almacenamiento local
   shared_preferences: ^2.2.0
 

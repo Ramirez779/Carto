@@ -1,56 +1,40 @@
 import 'package:flutter/material.dart';
 import '../../ui/design_tokens.dart';
 
-// Encabezado de la pantalla de checkout
+// Encabezado de pantalla de checkout
 class CheckoutHeader extends StatelessWidget {
   const CheckoutHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        // Fila con ícono y título
-        Row(
-          children: [
-            // Contenedor circular con ícono en color neutro
-            Container(
-              width: 40, // Ligeramente más grande para mejor presencia
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.surface, // Fondo neutro
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.black.withOpacity(0.08),
-                  width: 1,
-                ),
-              ),
-              child: Icon(
-                Icons.shopping_bag_outlined,
-                size: 20,
-                color:
-                    AppColors.textPrimary, // Icono en color de texto primario
-              ),
+        //Contenedor circular con ícono
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.black.withOpacity(0.08),
+              width: 1,
             ),
-            const SizedBox(width: 16), // Espaciado aumentado
-            // Título principal
-            Text(
-              'Finaliza tu compra',
-              style: TextStyle(
-                fontSize: 22, // Tamaño aumentado para jerarquía
-                fontWeight: FontWeight.w800, // Peso aumentado
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
+          ),
+          child: Icon(
+            Icons.shopping_bag_outlined,
+            size: 20,
+            color: AppColors.textPrimary,
+          ),
         ),
-        const SizedBox(height: 12),
-        // Subtítulo descriptivo
+        const SizedBox(width: 16),
+        //título
         Text(
-          'Revisa y confirma los detalles de tu pedido',
+          'Finaliza tu compra',
           style: TextStyle(
-            fontSize: 14,
-            color: AppColors.textSecondary,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
           ),
         ),
       ],
