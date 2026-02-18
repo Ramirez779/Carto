@@ -92,7 +92,6 @@ class Product {
   }
 
   // Crea una copia del producto con algunos campos modificados
-  // Útil para actualizar propiedades como el stock
   Product copyWith({
     String? id,
     String? title,

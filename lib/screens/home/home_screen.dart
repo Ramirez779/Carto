@@ -8,7 +8,6 @@ import 'package:carto/screens/product/product_detail_screen.dart';
 import 'package:carto/widgets/home_sliver_app.dart';
 import 'package:carto/widgets/product_card.dart';
 
-/// HomeScree
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -25,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    //Cargar productos iniciales
+    // Cargar productos iniciales
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadInitialProducts();
     });
@@ -72,14 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
             parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
-            // AppBar simple
+            // AppBar
             const HomeSliverAppBar(),
 
-            // Banner simple y minimalista
+            // Banner optimizado
             SliverToBoxAdapter(
               child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -91,42 +91,55 @@ class _HomeScreenState extends State<HomeScreen> {
                           ]
                         : [
                             Colors.white,
-                            Colors.white,
+                            const Color(0xffFAFBFF),
                           ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: isDark
                         ? const Color(0xff3A3F4B)
                         : const Color(0xffE2E6F0),
                     width: 1.5,
                   ),
+                  // Sombra sutil para profundidad
+                  boxShadow: [
+                    BoxShadow(
+                      color: isDark
+                          ? Colors.black.withOpacity(0.2)
+                          : Colors.black.withOpacity(0.03),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
-                    // Ícono simple
+                    // Ícono con mejor affordance
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: const Color(0xff4F6EF7).withOpacity(0.1),
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
                         Icons.local_offer_rounded,
-                        size: 22,
+                        size: 20,
                         color: Color(0xff4F6EF7),
                       ),
                     ),
                     const SizedBox(width: 12),
 
-                    // Texto simple
-                    const Expanded(
+                    // Texto más legible
+                    Expanded(
                       child: Text(
                         'Explora nuestros productos',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xff1A1D2E),
+                          color: isDark
+                              ? const Color(0xffE8E9ED)
+                              : const Color(0xff1A1D2E),
+                          letterSpacing: -0.2,
                         ),
                       ),
                     ),
@@ -135,24 +148,28 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
+            // Espaciado con proporción áurea  en 24 pixeles
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-            // Header
+            // Header con jerarquía visual
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Text(
+                child: Text(
                   'Productos',
                   style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.3,
+                    fontSize: 26, // Aumentado para mejor jerarquía visual
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                    color: isDark
+                        ? const Color(0xffFFFFFF)
+                        : const Color(0xff0F1115),
                   ),
                 ),
               ),
             ),
 
-            //Error message simplificado
+            // Error message mejorado
             if (productProvider.hasError)
               SliverToBoxAdapter(
                 child: Padding(
@@ -161,9 +178,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: const Color(0xffFF9500).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color(0xffFF9500).withOpacity(0.3),
+                        color: const Color(0xffFF9500).withOpacity(0.4),
                         width: 1.5,
                       ),
                     ),
@@ -172,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icon(
                           Icons.error_outline_rounded,
                           color: const Color(0xffFF9500),
-                          size: 20,
+                          size: 22,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -180,9 +197,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             productProvider.error ??
                                 'Error al cargar productos',
                             style: TextStyle(
-                              color:
-                                  isDark ? Colors.grey[300] : Colors.grey[700],
+                              color: isDark
+                                  ? const Color(0xffE8E9ED)
+                                  : const Color(0xff1A1D2E),
                               fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -192,33 +211,50 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-            // Grid de productos
+            // Grid de productos con mejor espaciado
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: _buildProductGrid(productProvider, isDark, showSkeleton),
             ),
 
-            // Empty state simplificado
+            // Empty state con mejor jerarquía visual
             if (!showSkeleton && productProvider.products.isEmpty)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(40),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 60, horizontal: 32),
                   child: Column(
                     children: [
-                      Icon(
-                        Icons.inventory_2_outlined,
-                        size: 64,
-                        color: isDark ? Colors.grey[600] : Colors.grey[400],
+                      // Ícono con mejor contraste
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xff2A2D36)
+                              : const Color(0xffF5F6FA),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.inventory_2_outlined,
+                          size: 48,
+                          color: isDark
+                              ? Colors.grey[600]
+                              : const Color(0xff9CA3AF),
+                        ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
+                      // Texto con mejor jerarquía
                       Text(
                         'No hay productos',
                         style: TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.grey[300] : Colors.grey[800],
+                          fontWeight: FontWeight.w700,
+                          color: isDark
+                              ? const Color(0xffE8E9ED)
+                              : const Color(0xff1A1D2E),
+                          letterSpacing: -0.3,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -226,7 +262,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Agrega tu primer producto',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey[600],
+                          color: isDark
+                              ? Colors.grey[500]
+                              : const Color(0xff6B7280),
+                          letterSpacing: -0.1,
                         ),
                       ),
                     ],
@@ -241,22 +280,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Grid de productos
+  // Grid de productos con mejor espaciado
   Widget _buildProductGrid(
       ProductProvider productProvider, bool isDark, bool showSkeleton) {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           if (showSkeleton) {
-            // Skeleton
+            // Skeleton con mejor contraste y affordance
             return Container(
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xff1C1F26) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xff2A2D36)
+                      : const Color(0xffE2E6F0),
+                  width: 1,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 8,
+                    color: Colors.black.withOpacity(isDark ? 0.1 : 0.04),
+                    blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),
                 ],
@@ -269,7 +314,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     flex: 3,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.grey[800] : Colors.grey[200],
+                        color: isDark
+                            ? const Color(0xff2A2D36)
+                            : const Color(0xffF5F6FA),
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(16),
                         ),
@@ -277,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  // Texto skeleton
+                  // Texto skeleton con mejor espaciado
                   Padding(
                     padding: const EdgeInsets.all(14),
                     child: Column(
@@ -287,7 +334,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 14,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.grey[700] : Colors.grey[300],
+                            color: isDark
+                                ? const Color(0xff3A3F4B)
+                                : const Color(0xffE2E6F0),
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -296,7 +345,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 12,
                           width: 70,
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.grey[700] : Colors.grey[300],
+                            color: isDark
+                                ? const Color(0xff3A3F4B)
+                                : const Color(0xffE2E6F0),
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -314,7 +365,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           final product = productProvider.products[index];
 
-          // ProductCard simple
+          // ProductCard con mejor affordance
           return ProductCard(
             product: product,
             onTap: () {
@@ -331,9 +382,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        childAspectRatio: 0.85, // Mejor proporción para las cards
+        mainAxisSpacing: 16, // Espaciado consistente
+        crossAxisSpacing: 16, // Espaciado consistente
+        childAspectRatio: 0.85, // Proporción equilibrada
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
 import '../main_shell.dart';
 import 'register_screen.dart';
 import '/widgets/auth_card.dart';
+import '../../providers/auth_provider.dart'; 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen>
   void initState() {
     super.initState();
 
-    // Animación de entrada suave (Principio de entrada/salida)
+    // Animación de entrada suave 
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -60,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
-  //============ VALIDACIÓN ============
+  //validción
 
   bool get _isFormValid {
     final email = _emailController.text.trim();
@@ -121,28 +123,58 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  //============ ACCIONES ============
-
+  //acciones
   void _loginFake() async {
     if (!_isFormValid) return;
 
     setState(() => _loading = true);
 
-    // Simulación de umbral de Doherty (< 400ms percepción instantánea)
-    await Future.delayed(const Duration(milliseconds: 700));
+    //Intenta login real con AuthProvider
+    final authProvider = context.read<AuthProvider>();
+    final success = await authProvider.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
 
     if (!mounted) return;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const MainShell()),
-    );
+    setState(() => _loading = false);
+
+    if (success) {
+      // Login exitoso
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const MainShell()),
+      );
+    } else {
+      // Muestra error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.errorMessage ?? 'Error al iniciar sesión'),
+          backgroundColor: Colors.red[700],
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+    }
   }
 
   void _loginGoogleFake() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const MainShell()),
+    //No hace nada por ahora
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Inicio de sesión con Google no disponible'),
+        backgroundColor: Colors.orange[700],
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 
@@ -159,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen>
               child: SlideTransition(
                 position: _slide,
                 child: Container(
-                  // Mejora: Sombra sutil para efecto de profundidad
+                  // Sombra sutil para efecto de profundidad
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     color: Colors.white,
@@ -188,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                       const SizedBox(height: 8),
 
-                      // Subtítulo descriptivo (mejora usabilidad)
+                      // Subtítulo descriptivo
                       Text(
                         'Ingresa tus credenciales para continuar',
                         style: TextStyle(
@@ -257,50 +289,69 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                         ),
 
-                      // Indicador de fuerza de contraseña
+                      // Indicador de fortaleza de contraseña
                       if (_passwordController.text.isNotEmpty &&
-                          !_showPasswordError &&
-                          _passwordController.text.length >= 6)
+                          !_showPasswordError)
                         Padding(
-                          padding: const EdgeInsets.only(top: 6, left: 4),
+                          padding: const EdgeInsets.only(top: 8, left: 4),
                           child: Row(
                             children: [
-                              Icon(
-                                Icons.shield_outlined,
-                                size: 14,
-                                color: _passwordStrengthColor,
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: _passwordStrengthColor,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: 6),
                               Text(
                                 'Seguridad: $_passwordStrength',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: _passwordStrengthColor,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
                           ),
                         ),
 
-                      const SizedBox(height: 24), //Espaciado ajustado
+                      const SizedBox(height: 20),
 
-                      // Botón principal
+                      // Barra de progreso de completado
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          value: _formCompleteness,
+                          minHeight: 4,
+                          backgroundColor: Colors.grey[200],
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            _formCompleteness < 1
+                                ? Colors.orange[400]!
+                                : Colors.green[400]!,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Botón de login
                       _loginButton(),
 
                       const SizedBox(height: 20),
 
-                      // Divisor
+                      // Divisor con texto
                       _divider(),
 
                       const SizedBox(height: 20),
 
-                      // Botón Google
+                      // Botón de Google
                       _googleButton(),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
-                      // Footer registro
+                      // Footer con enlace a registro
                       _footerRegister(),
                     ],
                   ),
@@ -312,8 +363,6 @@ class _LoginScreenState extends State<LoginScreen>
       ),
     );
   }
-
-  //============ WIDGETS ============
 
   Widget _input({
     required TextEditingController controller,
@@ -436,7 +485,7 @@ class _LoginScreenState extends State<LoginScreen>
         onPressed: isDisabled ? null : _loginFake,
         style: ElevatedButton.styleFrom(
           backgroundColor: isDisabled
-              ? const Color(0xffC5D0F7) // Mejor contraste
+              ? const Color(0xffC5D0F7)
               : const Color(0xff4F6EF7),
           foregroundColor: Colors.white,
           disabledBackgroundColor: const Color(0xffC5D0F7),

@@ -6,14 +6,14 @@ import 'package:carto/models/product.dart';
 class ProductProvider with ChangeNotifier {
   List<Product> _products = [];
   bool _isLoading = false;
-  bool _isRefreshing = false; // Nuevo estado para refresco manual
+  bool _isRefreshing = false;
   String? _error;
   DateTime? _lastRefreshTime; // Para tracking de última actualización
 
   // Getters
   List<Product> get products => _products;
   bool get isLoading => _isLoading;
-  bool get isRefreshing => _isRefreshing; // Nuevo getter
+  bool get isRefreshing => _isRefreshing; 
   String? get error => _error;
   bool get hasError => _error != null;
   DateTime? get lastRefreshTime => _lastRefreshTime;
@@ -25,7 +25,7 @@ class ProductProvider with ChangeNotifier {
 
   ProductProvider() : _repository = ProductRepository(ProductDAO());
 
-  // Cargar todos los productos (carga inicial)
+  // Cargar todos los productos 
   Future<void> loadProducts() async {
     if (_isLoading && !_isRefreshing) return;
 
@@ -45,7 +45,7 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  // Refrescar productos (con estado separado para UI)
+  // Refrescar productos con estado separado para UI
   Future<void> refreshProducts() async {
     if (_isRefreshing) return;
 
@@ -75,7 +75,7 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  // Refresco silencioso (para auto-refresh, no muestra loading)
+  // Refresco silencioso
   Future<bool> silentRefresh() async {
     try {
       final previousCount = _products.length;
@@ -196,7 +196,7 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Resetear provider (para testing o logout)
+  // Resetear provider
   void reset() {
     _products = [];
     _isLoading = false;

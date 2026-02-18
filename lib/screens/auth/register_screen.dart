@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../main_shell.dart';
 import 'login_screen.dart';
 import '/widgets/auth_card.dart';
+import '../../providers/auth_provider.dart';
 
-/// Pantalla de registro de nuevos usuarios mejorada
-/// Implementa principios heurísticos de UX/UI:
-/// - Jerarquía visual y espaciado proporcional
-/// - Ley de Fitts (tamaños de toque adecuados)
-/// - Affordance y feedback visual mejorado
-/// - Reducción de carga cognitiva
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -36,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   void initState() {
     super.initState();
 
-    // Animación de entrada suave (Principio de entrada/salida)
+    // Animación de entrada suave
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -70,7 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     super.dispose();
   }
 
-  //============ VALIDACIÓN ============
+  //validación
 
   bool get _isFormValid {
     final name = _nameController.text.trim();
@@ -135,23 +131,45 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
-  //============ ACCIONES ============
-
+  //acciones
   void _registerFake() async {
     if (!_isFormValid) return;
 
     setState(() => _loading = true);
 
-    // Simulación de umbral de Doherty (< 400ms percepción instantánea)
-    await Future.delayed(const Duration(milliseconds: 700));
+    //Intenta registro real con AuthProvider
+    final authProvider = context.read<AuthProvider>();
+    final success = await authProvider.register(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
 
     if (!mounted) return;
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const MainShell()),
-      (_) => false,
-    );
+    setState(() => _loading = false);
+
+    if (success) {
+      // Registro exitoso
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const MainShell()),
+        (_) => false,
+      );
+    } else {
+      // Muestra error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.errorMessage ?? 'Error al registrar'),
+          backgroundColor: Colors.red[700],
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+    }
   }
 
   @override
@@ -196,7 +214,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                       ),
                       const SizedBox(height: 8),
 
-                      // Subtítulo descriptivo (mejora usabilidad)
+                      // Subtítulo descriptivo
                       Text(
                         'Completa tus datos para registrarte',
                         style: TextStyle(
@@ -342,7 +360,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  //============ WIDGETS ============
+  //widgets
 
   Widget _input({
     required TextEditingController controller,
@@ -464,9 +482,8 @@ class _RegisterScreenState extends State<RegisterScreen>
       child: ElevatedButton(
         onPressed: isDisabled ? null : _registerFake,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isDisabled
-              ? const Color(0xffC5D0F7) // Mejor contraste
-              : const Color(0xff4F6EF7),
+          backgroundColor:
+              isDisabled ? const Color(0xffC5D0F7) : const Color(0xff4F6EF7),
           foregroundColor: Colors.white,
           disabledBackgroundColor: const Color(0xffC5D0F7),
           disabledForegroundColor: Colors.white.withOpacity(0.7),
